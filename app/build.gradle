@@ -1,0 +1,80 @@
+plugins {
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.android.application'
+}
+
+android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\keystorefile\\key_store_01.jks')
+            storePassword 'polidriving'
+            keyAlias 'key0'
+            keyPassword 'polidriving'
+        }
+    }
+    namespace 'com.polidriving.mobile'
+    compileSdk 34
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        applicationId 'com.polidriving.mobile'
+        signingConfig signingConfigs.release
+        multiDexEnabled true
+        versionName "1.0"
+        versionCode 1
+        targetSdk 34
+        minSdk 24
+    }
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'androidx.activity:activity:1.8.0'
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.amazonaws:aws-android-sdk-ddb-document:2.75.0'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.navigation:navigation-fragment:2.7.7'
+    implementation 'com.amplifyframework:aws-auth-cognito:2.14.13'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.20.1'
+    implementation 'com.amplifyframework:aws-storage-s3:2.14.13'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.amplifyframework:aws-datastore:2.14.13'
+    implementation 'com.amazonaws:aws-android-sdk-core:2.75.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    implementation 'com.amazonaws:aws-android-sdk-ddb:2.75.0'
+    implementation 'androidx.navigation:navigation-ui:2.7.7'
+    implementation 'androidx.annotation:annotation:1.7.1'
+    implementation 'com.amplifyframework:aws-api:2.14.13'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.amplifyframework:core:2.14.13'
+    implementation 'com.github.pires:obd-java-api:1.0'
+    implementation 'com.android.tools:r8:8.3.37'
+    testImplementation 'junit:junit:4.13.2'
+}

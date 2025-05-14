@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorClimatico"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.principal.FragmentosClima">
+
+    <View
+        android:id="@+id/divisorDatos1Clima"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/imagenBanderaDatos"
+        app:layout_constraintHorizontal_bias="0.656" />
+
+    <!--
+    <TextView
+        android:id="@+id/txtRiesgoAccidenteClima"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/riesgo_accidente"
+        android:textColor="@color/color_negro"
+        android:textSize="34sp"
+        tools:ignore="TextContrastCheck" />
+    -->
+
+    <LinearLayout
+        android:id="@+id/grupoNivelClima"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <!--
+        <ImageView
+            android:id="@+id/imagenBanderaDatosClima"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:src="@drawable/verde"
+            android:visibility="invisible"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+        -->
+
+        <TextView
+            android:id="@+id/txtMedidaDatosClima"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/riesgo_calculando"
+            android:textColor="@color/color_negro"
+            android:textSize="34sp"
+            tools:ignore="TextContrastCheck, TextSizeCheck" />
+
+        <!--
+        <TextView
+            android:id="@+id/txtPorcentajeDatosClima"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="6dp"
+            android:text="@string/medida_ejemplo"
+            android:textColor="@color/color_negro"
+            android:textSize="34sp"
+            android:visibility="invisible"
+            tools:ignore="TextContrastCheck, TextSizeCheck,VisualLintBounds" />
+        -->
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/grupoFechaClima"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/txtUltimaUpdateClima"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/last_update"
+            android:textColor="@color/color_negro"
+            android:textSize="15sp"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/txtUltimaUpdateFechaClima"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/valor_ejemplo_2"
+            android:textColor="@color/color_negro"
+            android:textSize="15sp"
+            tools:ignore="TextContrastCheck" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divisorDatos2Clima"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/txtDatoVelocidad" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="440dp"
+        tools:ignore="TextSizeCheck">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/estadoClima"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/clima_tipo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaEstadoClima"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/estadoLluvia"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/estado_lluvia"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaEstadoLluvia"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/gradosTemperaturaAlto"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/temperatura_alta"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+
+                    android:id="@+id/txtRespuestaGradosTemperaturaAlto"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck,TextSizeCheck" />
+
+            </LinearLayout>
+
+            <!--
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/gradosTemperaturaMedio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/temperatura_media"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaGradosTemperaturaMedio"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/gradosTemperaturaBajo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/temperatura_baja"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaGradosTemperaturaBajo"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+            -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/velocidadViento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/velocidad_del_viento"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaVelocidadViento"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/humedadRelativa"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/humedad"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaHumedadRelativa"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/indiceVisibilidad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/indice_visibilidad"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaIndiceVisibilidad"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/indiceUV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/indice_uv"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaIndiceUV"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/obstruccionVisibilidad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/nubosidad"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="VisualLintBounds" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaObstruccionVisibilidad"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="VisualLintBounds,TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:ignore="UselessLeaf">
+
+                <TextView
+                    android:id="@+id/indicePresion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/presion_atmosferica"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="VisualLintBounds" />
+
+                <TextView
+                    android:id="@+id/txtRespuestaIndicePresion"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    android:text="@string/valor_ejemplo_2"
+                    android:textColor="@color/color_negro"
+                    android:textSize="18sp"
+                    tools:ignore="VisualLintBounds,TextContrastCheck,TextSizeCheck" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/enlaceMobil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enlace_movil"
+                android:textColor="@color/color_negro"
+                android:textSize="18sp"
+                tools:ignore="VisualLintBounds" />
+
+            <TextView
+                android:id="@+id/txtRespuestaEnlaceMobil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:clickable="true"
+                android:enabled="false"
+                android:focusable="true"
+                android:linksClickable="true"
+                android:text="@string/valor_ejemplo_2"
+                android:textColor="@color/color_negro"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                tools:ignore="VisualLintBounds,DuplicateSpeakableTextCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

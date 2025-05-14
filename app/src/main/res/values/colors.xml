@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los colores de la APP -->
+<resources>
+    <color name="color_gradiente_lateral_uno">#FFDE9B6F</color>
+    <color name="color_gradiente_lateral_dos">#FF2C74A0</color>
+    <color name="color_principal_noche">#FF8487B1</color>
+    <color name="color_principal_dia">#FF6C8EEB</color>
+    <color name="color_amarillo">#FFFFCC00</color>
+    <color name="color_naranja">#FFFF8000</color>
+    <color name="color_titulos">#FFD6DBE1</color>
+    <color name="color_blanco">#FFFFFFFF</color>
+    <color name="color_negro">#FF000000</color>
+    <color name="color_verde">#FF4BB453</color>
+    <color name="color_rojo">#FFCC0000</color>
+    <color name="color_hint">#FF808080</color>
+</resources>

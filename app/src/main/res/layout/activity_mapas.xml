@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/botonSatelital"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/cambiar_satelital"
+        android:textColor="@color/color_negro"
+        map:layout_constraintBottom_toTopOf="@+id/botonCapas"
+        map:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextSizeCheck,VisualLintOverlap" />
+
+    <Button
+        android:id="@+id/botonCapas"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/cambiar_capas"
+        android:textColor="@color/color_negro"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintOverlap" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/presentarMapa"
+        android:name="com.google.android.gms.maps"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+</androidx.constraintlayout.widget.ConstraintLayout>

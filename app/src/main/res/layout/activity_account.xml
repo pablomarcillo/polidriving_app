@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorCuentaUser"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.cuenta.AccountActivity"
+    tools:ignore="ExtraText">
+
+    <ImageView
+        android:id="@+id/imagenUserCuenta"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="TODO"
+        android:foreground="@drawable/user"
+        app:layout_constraintBottom_toTopOf="@+id/txtUserInformacionCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.115"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <TextView
+        android:id="@+id/txtUserInformacionCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:text="@string/informacion"
+        android:textColor="@color/color_negro"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagenUserCuenta"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintLongText"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txtNombreyApellidoCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:text="@string/nombre_apellido"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtUserInformacionCuenta"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintLongText"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txtUsuarioUserCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/usuario_username"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtUserCorreoCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaUsuarioUserCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaCorreoCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtUserCorreoCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/correo_usuario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtTelefonoCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaCorreoCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaTelefonoCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtTelefonoCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/telefono_usuario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/edadUsuarioCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaTelefonoCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaEdadCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/edadUsuarioCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/edad_usuario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtGeneroCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaEdadCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaGeneroCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtGeneroCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/genero_usuario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtLentesCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaGeneroCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaLentesCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtLentesCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/uso_lentes"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtEstadoLicenciaCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaLentesCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaEstadoLicenciaCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtEstadoLicenciaCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/estado_licencia"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtPuntosLicenciaCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaEstadoLicenciaCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaPuntosLicenciaCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtPuntosLicenciaCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/puntos_licencia"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtCondicionesMedicasCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaPuntosLicenciaCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/respuestaCondicionesMedicasCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtCondicionesMedicasCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/condiciones_medicas"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/modificarUsuarioCuenta"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/respuestaCondicionesMedicasCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/modificarUsuarioCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <Button
+        android:id="@+id/modificarUsuarioCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/modificar_usuario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/eliminarUsuarioCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize" />
+
+    <Button
+        android:id="@+id/eliminarUsuarioCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/eliminar_usuario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/salirUsuarioCuenta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize" />
+
+    <Button
+        android:id="@+id/salirUsuarioCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/salir"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize" />
+</androidx.constraintlayout.widget.ConstraintLayout>

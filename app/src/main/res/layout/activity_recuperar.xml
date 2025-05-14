@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RecuperarActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/imagen_fondo"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.recuperar.RecuperarActivity"
+    tools:ignore="ExtraText">
+
+    <ImageView
+        android:id="@+id/imagenLogotipo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="TODO"
+        android:foreground="@drawable/restablecer"
+        app:layout_constraintBottom_toTopOf="@+id/txtInformacionRecuperar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <TextView
+        android:id="@+id/txtInformacionRecuperar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="@string/recuperar_cuenta_informacion"
+        android:textColor="@color/color_negro"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/txtUsuarioRecuperacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintLongText"
+        tools:visibility="visible" />
+
+    <EditText
+        android:id="@+id/txtUsuarioRecuperacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/fondo_color_edit_text"
+        android:ems="10"
+        android:hint="@string/usuario_recuperacion"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/botonVerificarUsuario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="Autofill,VisualLintTextFieldSize,TextContrastCheck" />
+
+    <Button
+        android:id="@+id/botonVerificarUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/verificar_usuario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtCodigoRecuperacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize,TextContrastCheck" />
+
+    <EditText
+        android:id="@+id/txtCodigoRecuperacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/fondo_color_edit_text"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="@string/ingresar_codigo"
+        android:inputType="numberPassword"
+        android:minHeight="48dp"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtPasswordRestablecer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/txtPasswordRestablecer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/fondo_color_edit_text"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="@string/nuevo_password"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtConfirmarPasswordRestablecer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/txtConfirmarPasswordRestablecer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/fondo_color_edit_text"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="@string/confirmar_nuevo_password"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/botonRestablecerPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+    <Button
+        android:id="@+id/botonRestablecerPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:enabled="false"
+        android:text="@string/restablecer_password"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize" />
+</androidx.constraintlayout.widget.ConstraintLayout>

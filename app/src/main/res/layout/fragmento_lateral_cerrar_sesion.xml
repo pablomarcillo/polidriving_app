@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorCerrar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.menu.FragmentosCerrarSesion"
+    tools:ignore="ExtraText">
+
+    <ImageView
+        android:id="@+id/imagenCerrarSesion"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="TODO"
+        android:foreground="@drawable/signout"
+        app:layout_constraintBottom_toTopOf="@+id/txtSignOut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.981"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <TextView
+        android:id="@+id/txtSignOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="144dp"
+        android:gravity="center"
+        android:text="@string/desea_cerrar_sesion"
+        android:textColor="@color/color_negro"
+        android:textSize="34sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/botonSignOut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintLongText"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/botonSignOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="150dp"
+        android:text="@string/cerrar_sesion"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize,TextContrastCheck" />
+</androidx.constraintlayout.widget.ConstraintLayout>

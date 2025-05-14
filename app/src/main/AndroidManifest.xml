@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Otorgamiento de permisos a la aplicación para el uso de GPS y conexión con AWS -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Otorgamiento de permisos a la aplicación para su conexión con el dispositivo OBD -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
+    <application
+        android:name=".base_datos.PrincipalAmplify"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/nombre_app"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.polidriving"
+        tools:targetApi="31">
+
+        <!-- Información necesaria para el funcionamiento de Google Maps -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="MPzaSyPD1chPIY2c2XgCE_A0BAICeua2_6R11jQ" />
+
+        <!-- Información base de la clase Privacidad y conexión con su clase padre -->
+        <activity
+            android:name=".clases.exit.SalirActivity"
+            android:exported="false"
+            android:label="@string/salir"
+            android:parentActivityName=".clases.cuenta.AccountActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.exit.SalirActivity" />
+        </activity>
+
+        <!-- Información base de la clase Cuenta y conexión con su clase padre -->
+        <activity
+            android:name=".clases.cuenta.AccountActivity"
+            android:exported="false"
+            android:label="@string/cuenta"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.cuenta.AccountActivity" />
+        </activity>
+
+        <!-- Información base de la clase Privacidad y conexión con su clase padre -->
+        <activity
+            android:name=".clases.privacidad.PrivacyActivity"
+            android:exported="false"
+            android:label="@string/privacidad"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.privacidad.PrivacyActivity" />
+        </activity>
+
+        <!-- Información base de la clase Riesgo y conexión con su clase padre -->
+        <activity
+            android:name=".clases.riesgo.RiesgoActivity"
+            android:exported="false"
+            android:label="@string/riesgo"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.riesgo.RiesgoActivity" />
+        </activity>
+
+        <!-- Información base de la clase AccuWeather y conexión con su clase padre -->
+        <activity
+            android:name=".clases.accuweather.AccuWeatherActivity"
+            android:exported="false"
+            android:label="@string/clima_actual"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.accuweather.AccuWeatherActivity" />
+        </activity>
+
+        <!-- Información base de la clase Perfil de Usuario y conexión con su clase padre -->
+        <activity
+            android:name=".clases.usuario.UsuarioActivity"
+            android:exported="false"
+            android:label="@string/perfil_usuario"
+            android:parentActivityName=".clases.cuenta.AccountActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.usuario.UsuarioActivity" />
+        </activity>
+
+        <!-- Información base de la clase Configuración y conexión con su clase padre -->
+        <activity
+            android:name=".clases.configuracion.ConfiguracionActivity"
+            android:exported="false"
+            android:label="@string/configuracion_alertas"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.configuracion.ConfiguracionActivity" />
+        </activity>
+
+        <!-- Información base de la clase OBD y conexión con su clase padre -->
+        <activity
+            android:name=".clases.obd.ObdActivity"
+            android:exported="false"
+            android:label="@string/informacion_obd"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.obd.ObdActivity" />
+        </activity>
+
+        <!-- Información base de la clase Parámetros OBD y conexión con su clase padre -->
+        <activity
+            android:name=".clases.obd.ParametrosActivity"
+            android:exported="false"
+            android:label="@string/parametros_obd"
+            android:parentActivityName=".clases.obd.ObdActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.obd.ParametrosActivity" />
+        </activity>
+
+        <!-- Información base de la clase Comentarios y conexión con su clase padre -->
+        <activity
+            android:name=".clases.comentarios.ComentariosActivity"
+            android:exported="false"
+            android:label="@string/enviar_comentario"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.comentarios.ComentariosActivity" />
+        </activity>
+
+        <!-- Información base de la clase Código y conexión con su clase padre -->
+        <activity
+            android:name=".clases.codigo.CodigoActivity"
+            android:exported="false"
+            android:label="@string/codigo_verificacion"
+            android:parentActivityName=".clases.nuevo.NuevoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.codigo.CodigoActivity" />
+        </activity>
+
+        <!-- Información base de la clase Mapas y conexión con su clase padre -->
+        <activity
+            android:name=".clases.mapas.MapasActivity"
+            android:exported="false"
+            android:label="@string/informacion_trafico"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.mapas.MapasActivity" />
+        </activity>
+
+        <!-- Información base de la clase Menú y conexión con su clase padre -->
+        <activity
+            android:name=".clases.menu.MenuLateralActivity"
+            android:exported="false"
+            android:label="@string/menu_lateral"
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:theme="@style/Theme.polidriving.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.menu.MenuLateralActivity" />
+        </activity>
+
+        <!-- Información base de la clase Principal -->
+        <activity
+            android:name=".clases.principal.PrincipalActivity"
+            android:exported="false"
+            android:label="@string/nombre_principal" />
+
+        <!-- Información base de la clase Recuperar Cuenta y conexión con su clase padre -->
+        <activity
+            android:name=".clases.recuperar.RecuperarActivity"
+            android:exported="false"
+            android:label="@string/recuperar_password"
+            android:parentActivityName=".clases.login.LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.recuperar.RecuperarActivity" />
+        </activity>
+
+        <!-- Información base de la clase Nuevo Usuario y conexión con su clase padre -->
+        <activity
+            android:name=".clases.nuevo.NuevoActivity"
+            android:exported="false"
+            android:label="@string/crear_nueva_cuenta"
+            android:parentActivityName=".clases.start.StartActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.nuevo.NuevoActivity" />
+        </activity>
+
+        <!-- Información base de la clase Login para iniciar sesión -->
+        <activity
+            android:name=".clases.login.LoginActivity"
+            android:exported="false"
+            android:label="@string/iniciar_sesion"
+            android:parentActivityName=".clases.start.StartActivity"
+            tools:ignore="RedundantLabel">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.login.LoginActivity" />
+        </activity>
+
+        <!-- Información base de la clase Start, esta Activity es la primera en presentarse -->
+        <activity
+            android:name=".clases.start.StartActivity"
+            android:exported="true"
+            android:label="@string/nombre_app"
+            android:theme="@style/Theme.polidriving.NoActionBar"
+            tools:ignore="RedundantLabel">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

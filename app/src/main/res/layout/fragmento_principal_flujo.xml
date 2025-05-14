@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorFlujo"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@drawable/imagen_fondo"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.principal.PosicionFragmentoPestana"
+    tools:ignore="ExtraText">
+
+    <View
+        android:id="@+id/divisorFlujos1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="20dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/imagenBanderaFlujos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagenBanderaFlujos"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/verde"
+        app:layout_constraintBottom_toTopOf="@+id/divisorFlujos2"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ContentDescription,ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/txtMedidaFlujos"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/medida_datos_baja"
+        android:textColor="@color/color_negro"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/divisorFlujos2"
+        app:layout_constraintEnd_toStartOf="@+id/txtPorcentajeFlujos"
+        app:layout_constraintStart_toEndOf="@+id/imagenBanderaFlujos"
+        tools:ignore="TextSizeCheck" />
+
+    <TextView
+        android:id="@+id/txtPorcentajeFlujos"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/medida_ejemplo"
+        android:textColor="@color/color_negro"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/divisorFlujos2"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextSizeCheck" />
+
+    <View
+        android:id="@+id/divisorFlujos2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="40dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/txtDatoUbicacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.656"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/txtUbicacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/flujo_ubicacion"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtVelocidadPromedio"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtVelocidadPromedio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/flujo_velocidad"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtNumeroVehiculos"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtNumeroVehiculos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/flujo_vehiculos"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtOcupacion"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtOcupacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/flujo_ocupacion"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtDireccionFlujo"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDireccionFlujo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="70dp"
+        android:text="@string/flujo_direccion"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDatoUbicacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtDatoVelocidadPromedio"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDatoVelocidadPromedio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtDatoNumeroVehiculos"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDatoNumeroVehiculos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtDatoOcupacion"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDatoOcupacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="40dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtDatoDireccionFlujo"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDatoDireccionFlujo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="70dp"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

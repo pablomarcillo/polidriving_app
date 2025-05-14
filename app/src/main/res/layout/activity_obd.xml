@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ObdActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.obd.ObdActivity"
+    tools:ignore="ExtraText">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/bChooseDevice"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/elegir_dispositivo"
+            android:textColor="@color/color_negro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextSizeCheck" />
+
+        <Button
+            android:id="@+id/bConnect"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="@string/conectar_dispositivo"
+            android:textColor="@color/color_negro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bChooseDevice"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="267dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:text="@string/ningun_dispositivo_bluetooth"
+            android:textColor="@color/color_negro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bConnect"
+            tools:ignore="MissingConstraints,TextSizeCheck,TextContrastCheck" />
+
+        <Button
+            android:id="@+id/bStart"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/iniciar_lectura"
+            android:textColor="@color/color_negro"
+            app:layout_constraintEnd_toStartOf="@+id/bStop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/info"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="315dp" />
+
+        <Button
+            android:id="@+id/bStop"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/detener_lectura"
+            android:textColor="@color/color_negro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bStart"
+            app:layout_constraintTop_toBottomOf="@+id/info"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/command_SpeedLabel"
+            android:layout_width="175dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="50dp"
+            android:text="@string/lectura_velocidad"
+            android:textColor="@color/color_negro"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bStart"
+            tools:ignore="MissingConstraints,TextSizeCheck,TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/command_EngineLoadLabel"
+            android:layout_width="175dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/lectura_engine_load"
+            android:textColor="@color/color_negro"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/command_SpeedLabel"
+            tools:ignore="TextContrastCheck,TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/command_RPMLabel"
+            android:layout_width="175dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/lectura_engine_rpm"
+            android:textColor="@color/color_negro"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/command_EngineLoadLabel"
+            tools:ignore="TextContrastCheck,TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/command_ThrottlePositionLabel"
+            android:layout_width="175dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/lectura_throttle_position"
+            android:textColor="@color/color_negro"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/command_RPMLabel"
+            tools:ignore="TextSizeCheck,TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/command_EngineCoolantTemperatureLabel"
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/lectura_engine_Coolant_temperature"
+            android:textColor="@color/color_negro"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/command_ThrottlePositionLabel"
+            tools:ignore="TextSizeCheck,TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/command_SpeedResult"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/textview_border"
+            android:text="@string/valor_ejemplo_2"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/command_SpeedLabel"
+            app:layout_constraintTop_toBottomOf="@+id/bStop"
+            tools:ignore="MissingConstraints,TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/command_EngineLoadResult"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textview_border"
+            android:text="@string/valor_ejemplo_2"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/command_EngineLoadLabel"
+            app:layout_constraintTop_toBottomOf="@+id/command_SpeedResult"
+            tools:ignore="TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/command_RPMResult"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textview_border"
+            android:text="@string/valor_ejemplo_2"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/command_RPMLabel"
+            app:layout_constraintTop_toBottomOf="@+id/command_EngineLoadResult"
+            tools:ignore="TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/command_ThrottlePositionResult"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textview_border"
+            android:text="@string/valor_ejemplo_2"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/command_ThrottlePositionLabel"
+            app:layout_constraintTop_toBottomOf="@+id/command_RPMResult"
+            tools:ignore="TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/command_EngineCoolantTemperatureResult"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textview_border"
+            android:text="@string/valor_ejemplo_2"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/command_EngineCoolantTemperatureLabel"
+            app:layout_constraintTop_toBottomOf="@+id/command_ThrottlePositionResult"
+            tools:ignore="TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/txtInformacionGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:gravity="center"
+            android:text="@string/conectar_obd"
+            android:textColor="@color/color_negro"
+            android:textSize="17sp"
+            app:layout_constraintTop_toBottomOf="@+id/command_EngineCoolantTemperatureResult"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <Switch
+            android:id="@+id/swConectar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/desactivada"
+            android:textColor="@color/color_negro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtInformacionGuardar"
+            tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
+
+        <Button
+            android:id="@+id/btnGuardarConfiguracion"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/guardar"
+            android:textColor="@color/color_negro"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/swConectar"
+            app:layout_constraintVertical_bias="0.346" />
+
+        <Button
+            android:id="@+id/bExitApp"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/salir"
+            android:textColor="@color/color_negro"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnGuardarConfiguracion" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

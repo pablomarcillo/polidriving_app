@@ -1,0 +1,5 @@
+<!-- Creación de las dimensiones de la APP -->
+<resources>
+    <dimen name="activity_horizontal_margin">200dp</dimen>
+    <dimen name="fab_margin">200dp</dimen>
+</resources>

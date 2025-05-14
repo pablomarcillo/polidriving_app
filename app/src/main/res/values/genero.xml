@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="genero" tools:ignore="InconsistentArrays">
+        <item>No Ingresado</item>
+        <item>Masculino</item>
+        <item>Femenino</item>
+    </string-array>
+</resources>

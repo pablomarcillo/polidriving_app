@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="yes_no" tools:ignore="InconsistentArrays">
+        <item>No Ingresado</item>
+        <item>Si</item>
+        <item>No</item>
+    </string-array>
+</resources>

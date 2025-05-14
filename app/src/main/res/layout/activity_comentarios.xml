@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RecuperarActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.comentarios.ComentariosActivity"
+    tools:ignore="ExtraText">
+
+    <ImageView
+        android:id="@+id/imagenComentarios"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="TODO"
+        android:foreground="@drawable/comentarios"
+        app:layout_constraintBottom_toTopOf="@+id/txtEnviarComentarios"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <TextView
+        android:id="@+id/txtEnviarComentarios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/enviar_comentarios"
+        android:textColor="@color/color_negro"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/txtTitulo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintLongText"
+        tools:visibility="visible" />
+
+    <EditText
+        android:id="@+id/txtTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/fondo_color_edit_text"
+        android:ems="10"
+        android:hint="@string/titulo_comentario"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/txtComentario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="Autofill,VisualLintTextFieldSize,TextContrastCheck" />
+
+    <EditText
+        android:id="@+id/txtComentario"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/fondo_color_edit_text"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/ingresar_mensaje"
+        android:inputType="textMultiLine|textLongMessage"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/botonComentario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="Autofill,VisualLintTextFieldSize,SpeakableTextPresentCheck,TextContrastCheck" />
+
+    <Button
+        android:id="@+id/botonComentario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/enviar_comentario"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/botonAyudas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize" />
+
+    <Button
+        android:id="@+id/botonAyudas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/ver_ayudas"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize" />
+</androidx.constraintlayout.widget.ConstraintLayout>

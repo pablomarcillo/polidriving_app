@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorPrincipal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    tools:context=".clases.principal.PrincipalActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/barraPestanas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:theme="@style/Theme.polidriving.AppBarOverlay"
+        app:elevation="1dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/botonesPestanas"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/transparent"
+            app:tabIndicatorColor="@color/color_negro"
+            app:tabIndicatorGravity="bottom"
+            app:tabSelectedTextAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:tabSelectedTextColor="@color/color_negro"
+            app:tabTextAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:tabTextColor="@color/color_negro"
+            tools:ignore="SpeakableTextPresentCheck" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/visorMultiPagina"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="SpeakableTextPresentCheck">
+    </androidx.viewpager.widget.ViewPager>
+
+    <TextView
+        android:id="@+id/txtSingInNombre"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:text="@string/valor_ejemplo"
+        android:textColor="@color/color_negro"
+        android:textSize="0sp"
+        app:layout_anchor="@+id/visorMultiPagina"
+        app:layout_anchorGravity="center_horizontal|top" />
+
+    <View
+        android:id="@+id/divisorDatos1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintHorizontal_bias="0.656" />
+
+    <LinearLayout
+        android:id="@+id/grupoNivelRiesgo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtMedidaDatosRiesgo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/riesgo_calculando"
+            android:textColor="@color/color_negro"
+            android:textSize="34sp"
+            tools:ignore="TextContrastCheck, TextSizeCheck" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/grupoFechaRiesgo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtUltimaUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/last_update"
+            android:textColor="@color/color_negro"
+            android:textSize="15sp"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/txtUltimaUpdateFechaRiesgo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/valor_ejemplo_2"
+            android:textColor="@color/color_negro"
+            android:textSize="15sp"
+            tools:ignore="TextContrastCheck" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divisorDatos2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="20dp"
+        android:background="?android:attr/listDivider" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/botonMapasPrincipal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="140dp"
+        android:layout_marginBottom="-70dp"
+        android:src="@android:drawable/ic_dialog_map"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/transparent"
+        app:borderWidth="20dp"
+        app:elevation="0dp"
+        app:rippleColor="@android:color/transparent"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/botonAccuWeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="190dp"
+        android:layout_marginBottom="-70dp"
+        android:src="@drawable/clima"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/transparent"
+        app:borderWidth="20dp"
+        app:elevation="0dp"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/botonOBD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="240dp"
+        android:layout_marginBottom="-70dp"
+        android:src="@drawable/obd"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/transparent"
+        app:borderWidth="20dp"
+        app:elevation="0dp"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/botonInformacionRiesgo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="290dp"
+        android:layout_marginBottom="-70dp"
+        android:src="@drawable/precaucion"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/transparent"
+        app:borderWidth="20dp"
+        app:elevation="0dp"
+        app:rippleColor="@android:color/transparent"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/botonInformacionUsuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="340dp"
+        android:layout_marginBottom="-70dp"
+        android:src="@drawable/usuario"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/transparent"
+        app:borderWidth="20dp"
+        app:elevation="0dp"
+        app:rippleColor="@android:color/transparent"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/botonCorreoPrincipal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="90dp"
+        android:layout_marginBottom="-70dp"
+        android:src="@android:drawable/ic_dialog_email"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/transparent"
+        app:borderWidth="20dp"
+        app:elevation="0dp"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

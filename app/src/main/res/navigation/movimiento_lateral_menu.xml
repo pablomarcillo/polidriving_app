@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/perfil_de_usuario"
+    android:id="@+id/forma_navegacion">
+
+    <fragment
+        android:id="@+id/perfil_de_usuario"
+        android:name="com.polidriving.mobile.clases.menu.FragmentosPerfilUsuario"
+        android:label="@string/perfil_usuario"
+        tools:layout="@layout/fragmento_lateral_usuario" />
+
+    <fragment
+        android:id="@+id/configuracion_usuario"
+        android:name="com.polidriving.mobile.clases.menu.FragmentosConfiguracionUsuario"
+        android:label="@string/configuracion_usuario"
+        tools:layout="@layout/fragmento_lateral_configuracion" />
+
+    <fragment
+        android:id="@+id/condiciones_usuario"
+        android:name="com.polidriving.mobile.clases.menu.FragmentosCondicionesServicios"
+        android:label="@string/condiciones_usuario"
+        tools:layout="@layout/fragmento_lateral_servicios" />
+
+    <fragment
+        android:id="@+id/politicas_usuario"
+        android:name="com.polidriving.mobile.clases.menu.FragmentosPoliticas"
+        android:label="@string/politicas_privacidad"
+        tools:layout="@layout/fragmento_lateral_politicas" />
+
+    <fragment
+        android:id="@+id/ayuda_comentarios"
+        android:name="com.polidriving.mobile.clases.menu.FragmentosAyudaComentarios"
+        android:label="@string/ayuda_comentarios"
+        tools:layout="@layout/fragmento_lateral_ayuda_comentarios" />
+
+    <fragment
+        android:id="@+id/cerrar_sesion"
+        android:name="com.polidriving.mobile.clases.menu.FragmentosCerrarSesion"
+        android:label="@string/cerrar_sesion"
+        tools:layout="@layout/fragmento_lateral_cerrar_sesion" />
+</navigation>

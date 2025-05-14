@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorUsuario"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    android:orientation="vertical"
+    tools:context=".clases.usuario.UsuarioActivity"
+    tools:ignore="LabelFor,Autofill,TextContrastCheck">
+
+    <TextView
+        android:id="@+id/respuestaTipo_Perfil"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text=""
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/imagenUser_Perfil"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_gravity="center"
+        android:foreground="@drawable/user"
+        app:layout_constraintBottom_toTopOf="@+id/txtUserInformacion_Perfil"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <TextView
+        android:id="@+id/txtUserInformacion_Perfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/informacion"
+        android:textColor="@color/color_negro"
+        android:textSize="24sp"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintLongText" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtNombre_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/usuario_nombre"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/respuestaNombre_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize" />
+
+            <TextView
+                android:id="@+id/txtApellido_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/usuario_apellido"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/respuestaApellido_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="textPersonName"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/txtUsuarioUser_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/usuario_username"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/respuestaUsuarioUser_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:inputType="textPersonName"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
+
+            <TextView
+                android:id="@+id/txtUserCorreo_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/correo_usuario"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp"
+                tools:ignore="TextContrastCheck" />
+
+            <EditText
+                android:id="@+id/respuestaCorreo_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:inputType="textEmailAddress"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
+
+            <TextView
+                android:id="@+id/txtTelefono_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/telefono_usuario"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp"
+                tools:ignore="TextContrastCheck" />
+
+            <EditText
+                android:id="@+id/respuestaTelefono_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="number"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/edadUsuario_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edad_usuario"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <Spinner
+                android:id="@+id/respuestaEdad_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/txtGenero_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/genero_usuario"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <Spinner
+                android:id="@+id/respuestaGenero_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="textPersonName"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/txtLentes_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/uso_lentes"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <Spinner
+                android:id="@+id/respuestaLentes_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="textPersonName"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,TextContrastCheck,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/txtEstadoLicencia_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/estado_licencia"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp"
+                tools:ignore="TextContrastCheck" />
+
+            <Spinner
+                android:id="@+id/respuestaEstadoLicencia_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="textPersonName"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize" />
+
+            <TextView
+                android:id="@+id/txtPuntosLicencia_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/puntos_licencia"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <Spinner
+                android:id="@+id/respuestaPuntosLicencia_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="number"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize" />
+
+            <TextView
+                android:id="@+id/txtCondicionesMedicas_Perfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/condiciones_medicas"
+                android:textColor="@color/color_negro"
+                android:textSize="30sp" />
+
+            <Spinner
+                android:id="@+id/respuestaCondicionesMedicas_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:inputType="textPersonName"
+                android:text="@string/valor_ejemplo"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintTextFieldSize,SpeakableTextPresentCheck" />
+
+            <Button
+                android:id="@+id/modificarUsuario_Perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/usuario_guardar"
+                android:textColor="@color/color_negro"
+                tools:ignore="VisualLintButtonSize,TextContrastCheck" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

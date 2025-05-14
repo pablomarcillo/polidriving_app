@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<resources>
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>

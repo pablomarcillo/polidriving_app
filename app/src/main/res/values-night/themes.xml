@@ -1,0 +1,22 @@
+<!-- Creación del tema nocturno de la APP -->
+<!--suppress XmlUnusedNamespaceDeclaration -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.polidriving" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorSecondaryVariant">@color/color_gradiente_lateral_dos</item>
+        <item name="colorSecondary">@color/color_gradiente_lateral_uno</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="colorPrimaryVariant">@color/color_principal_noche</item>
+        <item name="android:textColorHint">@color/color_hint</item>
+        <item name="colorPrimary">@color/color_principal_dia</item>
+        <item name="colorOnSecondary">@color/color_negro</item>
+        <item name="colorOnPrimary">@color/color_blanco</item>
+    </style>
+    <style name="Theme.polidriving.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.polidriving.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.polidriving.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Base.Theme.polidriving" parent="Theme.Material3.DayNight.NoActionBar">
+    </style>
+</resources>

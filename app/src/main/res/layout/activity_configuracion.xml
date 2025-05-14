@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorConfiguracionUsuario"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_blanco"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.configuracion.ConfiguracionActivity"
+    tools:ignore="ExtraText">
+
+    <ImageView
+        android:id="@+id/imagenConfiguracionesUserSet"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="TODO"
+        android:foreground="@drawable/configuraciones"
+        app:layout_constraintBottom_toTopOf="@+id/txtConfiguracionesUserSet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.918"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <TextView
+        android:id="@+id/txtConfiguracionesUserSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="270dp"
+        android:gravity="center"
+        android:text="@string/configuraciones_usuario"
+        android:textColor="@color/color_negro"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/botonIrConfiguracionSet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.181"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintLongText"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/botonIrConfiguracionSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="50dp"
+        android:text="@string/guardar_configuraciones"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.818"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintButtonSize" />
+
+    <TextView
+        android:id="@+id/txtMuyAlto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/alertas_muy_altas"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/botonIrConfiguracionSet"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtAlto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/alertas_altas"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtMuyAlto"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtMedio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/alertas_medias"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtAlto"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtBajo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/alertas_bajas"
+        android:textColor="@color/color_negro"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtMedio"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Switch
+        android:id="@+id/switchMuyAlto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/desactivada"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/botonIrConfiguracionSet"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck,TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
+
+    <Switch
+        android:id="@+id/switchAlto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/desactivada"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/switchMuyAlto"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck,TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
+
+    <Switch
+        android:id="@+id/switchMedio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/desactivada"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/switchAlto"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck,TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
+
+    <Switch
+        android:id="@+id/switchBajo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/desactivada"
+        android:textColor="@color/color_negro"
+        app:layout_constraintBottom_toTopOf="@+id/switchMedio"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TextContrastCheck,TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml,DuplicateSpeakableTextCheck" />
+</androidx.constraintlayout.widget.ConstraintLayout>

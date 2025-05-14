@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contenedorDatos"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@drawable/imagen_fondo"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".clases.principal.PosicionFragmentoPestana">
+
+    <View
+        android:id="@+id/divisorDatos1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="5dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/imagenBanderaDatos"
+        app:layout_constraintHorizontal_bias="0.656" />
+
+    <TextView
+        android:id="@+id/txtRiesgoAccidente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/riesgo_accidente"
+        android:textColor="@color/color_negro"
+        android:textSize="34sp"
+        tools:ignore="TextContrastCheck" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imagenBanderaDatos"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:src="@drawable/verde"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/txtMedidaDatos"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:text="@string/medida_datos_baja"
+            android:textColor="@color/color_negro"
+            android:textSize="34sp"
+            tools:ignore="TextContrastCheck, TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/txtPorcentajeDatos"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="6dp"
+            android:text="@string/medida_ejemplo"
+            android:textColor="@color/color_negro"
+            android:textSize="34sp"
+            tools:ignore="TextContrastCheck, TextSizeCheck,VisualLintBounds" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtUltimaUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:text="@string/last_update"
+            android:textColor="@color/color_negro"
+            android:textSize="20sp"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/txtUltimaUpdateFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:text="@string/valor_ejemplo"
+            android:textColor="@color/color_negro"
+            android:textSize="15sp"
+            tools:ignore="TextContrastCheck" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divisorDatos2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/txtDatoVelocidad" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="350dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtVelocidad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/velocidad_vehiculo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelVelocidad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoVelocidad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtRPM"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/rpm_vehiculo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelRPM"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoRPM"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtBaterias"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/nivel_baterias"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelBaterias"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoBaterias"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtTemperatura"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/temperatura_motor"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelMotor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoMotor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtAngulo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/angulo_inclinacion"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelAngulo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoAngulo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtLugar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/condiciones_lugar"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelLugar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoLugar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtTemperaturaAmbiente"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/condiciones_temperatura"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelTemperaturaAmbiente"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoTemperaturaAmbiente"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtPrecipitacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/condiciones_precipitacion"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelPrecipitacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoPrecipitacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtHumedad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/condiciones_humedad"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelHumedad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoHumedad"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtViento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/condiciones_viento"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelViento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoViento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtUbicacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/flujo_ubicacion"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelUbicacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoUbicacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtVelocidadPromedio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/flujo_velocidad"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelVelocidadPromedio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoVelocidadPromedio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtNumeroVehiculos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/flujo_vehiculos"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelNumeroVehiculos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoNumeroVehiculos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtOcupacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/flujo_ocupacion"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelOcupacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoOcupacion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtDireccionFlujo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.7"
+                    android:gravity="start"
+                    android:text="@string/flujo_direccion"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtNivelDireccionFlujo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <TextView
+                    android:id="@+id/txtDatoDireccionFlujo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:text="@string/valor_ejemplo"
+                    android:textColor="@color/color_negro"
+                    android:textSize="15sp"
+                    tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Creación de los elementos visuales y sus parametros correspondientes -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/navegador_grupo_1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/perfil_de_usuario"
+            android:icon="@drawable/usuario"
+            android:title="@string/perfil_usuario" />
+        <item
+            android:id="@+id/configuracion_usuario"
+            android:icon="@drawable/configuracion"
+            android:title="@string/configuracion_usuario" />
+    </group>
+
+    <group
+        android:id="@+id/navegador_grupo_2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/condiciones_usuario"
+            android:icon="@drawable/condiciones"
+            android:title="@string/condiciones_usuario" />
+        <item
+            android:id="@+id/politicas_usuario"
+            android:icon="@drawable/privacidad"
+            android:title="@string/politicas_privacidad" />
+
+        <item
+            android:id="@+id/ayuda_comentarios"
+            android:icon="@drawable/ayuda"
+            android:title="@string/ayuda_comentarios" />
+    </group>
+
+    <group
+        android:id="@+id/navegador_grupo_3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/cerrar_sesion"
+            android:icon="@drawable/cerrar"
+            android:title="@string/cerrar_sesion" />
+    </group>
+</menu>
