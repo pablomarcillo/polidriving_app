@@ -1,5 +1,7 @@
 //Paquete que contiene un conjunto de clases relacionadas por finalidad, ámbito y herencia
 package com.polidriving.mobile.base_datos;
+import com.polidriving.mobile.BuildConfig;
+
 
 //Clases usadas para el CRUD de usuarios en la base de datos DYNAMODB
 //Clases usadas para la conexión con AWS mediante Amplify y Cognito
@@ -20,9 +22,9 @@ import java.util.Map;
 // Clase que permite la gestión de los perfiles de usuario
 public class DataBaseAccess {
     // Definición de las variables a usar en la conexión con la base de datos
-    private final String SECRET_KEY = "89z+euHRudmNVt96BMNJZ8KG9QofPdm/kY2W6wSF";
+    private final String BASE_DATOS_ACCESS_SECRET_KEY = BuildConfig.BASE_DATOS_ACCESS_SECRET_KEY;
+    private final String BASE_DATOS_ACCESS_KEY = BuildConfig.BASE_DATOS_ACCESS_KEY;
     private final String DYNAMODB_TABLE_ALERTAS = "DataSet_Alertas";
-    private final String ACCESS_KEY = "AWWW6GBMGUTS3GJQPCL7";
     private final String DYNAMODB_TABLE_DATASET = "DataSet";
     private final String DYNAMODB_TABLE_ROUTE_1 = "Route_1";
     private final String DYNAMODB_TABLE_DATA = "UserData";
@@ -30,7 +32,7 @@ public class DataBaseAccess {
 
     public CharSequence actualizarUsuario(String puntos, String estado, String user, String telefono, String tipo, String correo, String edad, String apellido, String medicas, String nombre, String genero, String lentes) {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Agregando la lista de atributos a la base de datos
@@ -62,7 +64,7 @@ public class DataBaseAccess {
 
     public CharSequence agregarUsuario(String usernameRecibido, String correoRecibido) {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Agregando la lista de atributos a la base de datos
@@ -94,7 +96,7 @@ public class DataBaseAccess {
 
     public CharSequence eliminarUsuario(String usernameRecibido, String correoRecibido) {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Agregando la lista de atributos a la base de datos
@@ -116,7 +118,7 @@ public class DataBaseAccess {
 
     public CharSequence datosRouteOneDynamoDB(String identificador) {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Realizando una petición a la base de datos para adquirir los datos del usuario
@@ -155,7 +157,7 @@ public class DataBaseAccess {
 
     public CharSequence obtenerUsuario(String usernameRecibido) {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Realizando una petición a la base de datos para adquirir los datos del usuario
@@ -205,7 +207,7 @@ public class DataBaseAccess {
 
     public CharSequence datosDataSetDynamoDB(int identificador) {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Realizando una petición a la base de datos para adquirir los datos del usuario
@@ -324,7 +326,7 @@ public class DataBaseAccess {
 
     public CharSequence obtenerAlarma(int identificador) {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Realizando una petición a la base de datos para adquirir los datos del usuario
@@ -353,7 +355,7 @@ public class DataBaseAccess {
 
     public CharSequence obtenerPoint() {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Realizando una petición a la base de datos para adquirir los datos del usuario
@@ -379,7 +381,7 @@ public class DataBaseAccess {
 
     public CharSequence obtenerId() {
         //Crear un nuevo proveedor de credenciales
-        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY));
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         // Realizando una petición a la base de datos para adquirir los datos del usuario

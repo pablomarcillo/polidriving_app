@@ -6,7 +6,7 @@ plugins {
 android {
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\keystorefile\\key_store_01.jks')
+            storeFile file('C:\\Users\\eddya\\OneDrive\\Escritorio\\Repositorios_Polidriving-\\keys\\key_store_01.jks')
             storePassword 'polidriving'
             keyAlias 'key0'
             keyPassword 'polidriving'
@@ -23,6 +23,16 @@ android {
         versionCode 1
         targetSdk 34
         minSdk 24
+        buildConfigField "String", "BASE_DATOS_ACCESS_SECRET_KEY", "\"${BASE_DATOS_ACCESS_SECRET_KEY}\""
+        buildConfigField "String", "BASE_DATOS_ACCESS_KEY", "\"${BASE_DATOS_ACCESS_KEY}\""
+
+        buildConfigField "String", "CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_GEO_POSITION", "\"${CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_GEO_POSITION}\""
+        buildConfigField "String", "CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_APIKEY", "\"${CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_APIKEY}\""
+
+        buildConfigField "String", "CLASS_ACCUWEATHER_NETWORK_UTILS_CURRENT_CONDITIONS", "\"${CLASS_ACCUWEATHER_NETWORK_UTILS_CURRENT_CONDITIONS}\""
+        buildConfigField "String", "CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY", "\"${CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY}\""
+
+        buildConfigField "String", "CLASS_COMENTARIOS_ENLACE_WEB", "\"${CLASS_COMENTARIOS_ENLACE_WEB}\""
     }
     buildTypes {
         release {

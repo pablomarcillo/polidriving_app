@@ -12,8 +12,7 @@ import android.util.Log;
 
 //Clase que permite la conexión con los servidores de AWS
 public class PrincipalAmplify extends Application {
-    //En el método onCreate() ejecuta la lógica de
-    //arranque básica de la aplicación
+    //En el método onCreate() ejecuta la lógica de arranque básica de la aplicación
     public void onCreate() {
         super.onCreate();
         //Inicia la conexión con Cognito de AWS, presentando un mensaje en consola si se establece la conexión  o no.

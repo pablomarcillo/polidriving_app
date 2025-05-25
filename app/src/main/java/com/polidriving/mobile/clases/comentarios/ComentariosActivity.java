@@ -1,5 +1,6 @@
 //Paquete que contiene un conjunto de clases relacionadas por finalidad, ámbito y herencia
 package com.polidriving.mobile.clases.comentarios;
+import com.polidriving.mobile.BuildConfig;
 
 //Clases usadas para reconocimiento de elementos en actividades
 //Clases usadas para la presentación de información al usuario
@@ -19,7 +20,7 @@ import android.net.Uri;
 @SuppressWarnings("deprecation")
 public class ComentariosActivity extends AppCompatActivity {
     //Creación de variables para enviar, presentar y recibir información
-    String enlace_web = "https://www.epn.edu.ec/";
+    String CLASS_COMENTARIOS_ENLACE_WEB = BuildConfig.CLASS_COMENTARIOS_ENLACE_WEB;
     EditText textoComentario;
     Button cambiarPrincipal;
     EditText textoTitulo;
@@ -75,7 +76,7 @@ public class ComentariosActivity extends AppCompatActivity {
         web.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Obteniendo el enlace de la página web a redirigir
-                Uri enlace = Uri.parse(enlace_web);
+                Uri enlace = Uri.parse(CLASS_COMENTARIOS_ENLACE_WEB);
                 //Abriendo el enlace web en el navegador de preferencia
                 Intent pagina = new Intent(Intent.ACTION_VIEW, enlace);
                 startActivity(pagina);

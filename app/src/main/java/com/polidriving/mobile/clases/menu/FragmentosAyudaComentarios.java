@@ -1,5 +1,6 @@
 //Paquete que contiene un conjunto de clases relacionadas por finalidad, ámbito y herencia
 package com.polidriving.mobile.clases.menu;
+import com.polidriving.mobile.BuildConfig;
 
 //Clases
 //Clases usadas para reconocimiento de elementos en actividades
@@ -25,7 +26,7 @@ import android.net.Uri;
 
 public class FragmentosAyudaComentarios extends Fragment {
     //Creación de variables para enviar, presentar y recibir información
-    String enlace_web = "https://www.epn.edu.ec/";
+    String CLASS_COMENTARIOS_ENLACE_WEB = BuildConfig.CLASS_COMENTARIOS_ENLACE_WEB;
     String regresar = "";
     String enviado = "";
     Button comentario;
@@ -81,7 +82,7 @@ public class FragmentosAyudaComentarios extends Fragment {
                 //Cadena de texto para verificar el estado de la actividad
                 regresar = "No Regresar";
                 //Obteniendo el enlace de la página web a redirigir
-                Uri enlace = Uri.parse(enlace_web);
+                Uri enlace = Uri.parse(CLASS_COMENTARIOS_ENLACE_WEB);
                 //Abriendo el enlace web en el navegador de preferencia
                 Intent pagina = new Intent(Intent.ACTION_VIEW, enlace);
                 startActivity(pagina);

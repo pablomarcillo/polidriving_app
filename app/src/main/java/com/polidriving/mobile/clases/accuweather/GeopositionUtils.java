@@ -1,5 +1,6 @@
 //Paquete que contiene un conjunto de clases relacionadas por finalidad, ámbito y herencia
 package com.polidriving.mobile.clases.accuweather;
+import com.polidriving.mobile.BuildConfig;
 
 //Clases usadas para cambio entre actividades
 //Clases usadas para la conexión interclases
@@ -13,8 +14,8 @@ import android.net.Uri;
 import java.net.URL;
 
 public class GeopositionUtils {
-    private final static String geoPosition = "https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=";
-    private final static String apiKey = "uLP123xtlw2SeVAqWZLc8wb0EnO6h3AX";
+    private final static String CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_GEO_POSITION = BuildConfig.CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_GEO_POSITION;
+    private final static String CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_APIKEY = BuildConfig.CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_APIKEY;
     private final static String parametroApiKey = "apikey";
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
@@ -38,8 +39,8 @@ public class GeopositionUtils {
 
     public static URL geoPositionData(String Latitud, String Longitud) {
         // Estableciendo la URL de consulta de la posición del usuario mediante las coordenadas
-        String geoPositionComplete = geoPosition + apiKey + "&q=" + Latitud + "%2C%20" + Longitud + "&language=es-EC&details=true&toplevel=false";
-        Uri builtUri = Uri.parse(geoPositionComplete).buildUpon().appendQueryParameter(apiKey, parametroApiKey).build();
+        String geoPositionComplete = CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_GEO_POSITION + CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_APIKEY + "&q=" + Latitud + "%2C%20" + Longitud + "&language=es-EC&details=true&toplevel=false";
+        Uri builtUri = Uri.parse(geoPositionComplete).buildUpon().appendQueryParameter(CLASS_ACCUWEATHER_GEOPOSITION_UTILS_GEO_APIKEY, parametroApiKey).build();
         // Estableciendo la URL en null
         URL url = null;
         try {

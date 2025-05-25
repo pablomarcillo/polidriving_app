@@ -1,5 +1,6 @@
 //Paquete que contiene un conjunto de clases relacionadas por finalidad, ámbito y herencia
 package com.polidriving.mobile.clases.accuweather;
+import com.polidriving.mobile.BuildConfig;
 
 //Clases usadas para cambio entre actividades
 //Clases usadas para la conexión interclases
@@ -14,8 +15,8 @@ import java.net.URL;
 
 public class NetworkUtils {
     // Declaración de variables a utilizar
-    private final static String currentConditions = "https://dataservice.accuweather.com/currentconditions/v1/";
-    private final static String apiKey = "uLP123xtlw2SeVAqWZLc8wb0EnO6h3AX";
+    private final static String CLASS_ACCUWEATHER_NETWORK_UTILS_CURRENT_CONDITIONS = BuildConfig.CLASS_ACCUWEATHER_NETWORK_UTILS_CURRENT_CONDITIONS;
+    private final static String CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY = BuildConfig.CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY;
     private final static String parametroApiKey = "apikey";
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
@@ -39,8 +40,8 @@ public class NetworkUtils {
 
     public static URL buildUrlForWeather(String value) {
         // Estableciendo la URL de consulta de la posición del usuario mediante las coordenadas
-        String currentConditionsComplete = currentConditions + value + "?apikey=" + apiKey + "&language=es-EC&details=true";
-        Uri builtUri = Uri.parse(currentConditionsComplete).buildUpon().appendQueryParameter(apiKey, parametroApiKey).build();
+        String currentConditionsComplete = CLASS_ACCUWEATHER_NETWORK_UTILS_CURRENT_CONDITIONS + value + "?apikey=" + CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY + "&language=es-EC&details=true";
+        Uri builtUri = Uri.parse(currentConditionsComplete).buildUpon().appendQueryParameter(CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY, parametroApiKey).build();
         // Estableciendo la URL en null
         URL url = null;
         try {
