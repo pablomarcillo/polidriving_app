@@ -1,13 +1,13 @@
 {
-  "projectName": "polidriving",
+  "providers": [
+    "awscloudformation"
+  ],
+  "projectName": "apppis2002",
   "version": "3.1",
   "frontend": "android",
   "android": {
     "config": {
       "ResDir": "app/src/main/res"
     }
-  },
-  "providers": [
-    "awscloudformation"
-  ]
+  }
 }
