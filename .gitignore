@@ -41,3 +41,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 gradle.properties
 .env
+gradle.properties
