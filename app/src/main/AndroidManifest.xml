@@ -67,6 +67,18 @@
                 android:value=".clases.privacidad.PrivacyActivity" />
         </activity>
 
+        <!-- Información base de la clase Vehículos y conexión con su clase padre -->
+        <activity
+            android:name=".clases.vehiculos.VehiculosActivity"
+            android:exported="false"
+            android:label="@string/vehiculos"
+            android:launchMode="singleTop"
+            android:parentActivityName=".clases.principal.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".clases.principal.PrincipalActivity" />
+        </activity>
+
         <!-- Información base de la clase Riesgo y conexión con su clase padre -->
         <activity
             android:name=".clases.riesgo.RiesgoActivity"

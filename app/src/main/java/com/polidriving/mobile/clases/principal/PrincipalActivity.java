@@ -1,15 +1,8 @@
 //Paquete que contiene un conjunto de clases relacionadas por finalidad, ámbito y herencia
 package com.polidriving.mobile.clases.principal;
-
-//Clases usadas para la conexión con AWS mediante Amplify y Cognito
-//Clases usadas para reconocimiento de elementos en actividades
-//Clases usadas para la presentación de información al usuario
-//Clases usadas para cambio entre actividades
-//Clases usadas para la conexión interclases
-//Clases usadas para el uso de fragmentos
-//Clases usadas para el mapeo de cadenas
 import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.polidriving.mobile.BuildConfig;
 import com.polidriving.mobile.clases.configuracion.ConfiguracionActivity;
 import com.polidriving.mobile.clases.notificaciones.NotificacionesVoz;
 import com.polidriving.mobile.clases.accuweather.AccuWeatherActivity;
@@ -19,6 +12,7 @@ import com.github.pires.obd.commands.engine.ThrottlePositionCommand;
 import com.polidriving.mobile.databinding.ActivityPrincipalBinding;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.polidriving.mobile.clases.privacidad.PrivacyActivity;
+import com.polidriving.mobile.clases.vehiculos.VehiculosActivity;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.polidriving.mobile.clases.cuenta.AccountActivity;
 import com.polidriving.mobile.clases.riesgo.RiesgoActivity;
@@ -90,6 +84,7 @@ public class PrincipalActivity extends AppCompatActivity {
     BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
     ObdCommand command_Speed = new SpeedCommand();
     ObdCommand command_Load = new LoadCommand();
+    private final String URL_API_PREDICTOR = BuildConfig.URL_API_PREDICTOR;
     private ActivityPrincipalBinding vinculante;
     private NotificacionesVoz conversor = null;
     ObdCommand command_RPM = new RPMCommand();
@@ -108,7 +103,10 @@ public class PrincipalActivity extends AppCompatActivity {
     String nombreUsuario;
     String tipoUsuario;
     TextView actual;
-    Timer myTimer;
+    Timer myTimer; // Timer para la lectura OBD
+
+    int TIMEOUT_API_PREDICTOR = BuildConfig.TIMEOUT_API_PREDICTOR; // Tiempo de espera para la API del predictor, en milisegundos
+    int INTERVALO_ENTRE_PETICIONES = BuildConfig.INTERVALO_ENTRE_PETICIONES; // Intervalo entre peticiones al modelo ML, en milisegundos
 
     public boolean onOptionsItemSelected(MenuItem item) {
         // Maneja los clics del elemento de la barra de acción.
@@ -141,6 +139,11 @@ public class PrincipalActivity extends AppCompatActivity {
             }
             if (id == R.id.accion_privacidad) {
                 //Mensaje emergente que informa al usuario que se va a cambiar de actividad a privacidad
+                String saludo = getString(R.string.no_permitido);
+                Toast.makeText(getApplicationContext(), saludo, Toast.LENGTH_SHORT).show();
+            }
+            if (id == R.id.accion_vehiculos) {
+                //Mensaje emergente que informa al usuario que se va a cambiar de actividad a vehículos
                 String saludo = getString(R.string.no_permitido);
                 Toast.makeText(getApplicationContext(), saludo, Toast.LENGTH_SHORT).show();
             }
@@ -188,6 +191,15 @@ public class PrincipalActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), saludo, Toast.LENGTH_SHORT).show();
                 //Redirigiendo al usuario a la actividad de Privacidad
                 Intent intent = new Intent(PrincipalActivity.this, PrivacyActivity.class);
+                //Iniciando la actividad
+                startActivity(intent);
+            }
+            if (id == R.id.accion_vehiculos) {
+                //Mensaje emergente que informa al usuario que se va a cambiar de actividad a vehículos
+                String saludo = getString(R.string.vehiculos);
+                Toast.makeText(getApplicationContext(), saludo, Toast.LENGTH_SHORT).show();
+                //Redirigiendo al usuario a la actividad de Vehículos
+                Intent intent = new Intent(PrincipalActivity.this, VehiculosActivity.class);
                 //Iniciando la actividad
                 startActivity(intent);
             }
@@ -362,6 +374,17 @@ public class PrincipalActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Esto agrega elementos a la barra de acción si está presente.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        
+        // Debug: Verificar que el menú de vehículos está configurado correctamente
+        MenuItem vehiculosItem = menu.findItem(R.id.accion_vehiculos);
+        if (vehiculosItem != null) {
+            Log.d("PrincipalActivity", "Menú vehículos encontrado. Título: " + vehiculosItem.getTitle());
+            Log.d("PrincipalActivity", "Es visible: " + vehiculosItem.isVisible());
+            Log.d("PrincipalActivity", "Es habilitado: " + vehiculosItem.isEnabled());
+        } else {
+            Log.e("PrincipalActivity", "Menú vehículos NO encontrado");
+        }
+        
         return true;
     }
 
@@ -590,7 +613,7 @@ public class PrincipalActivity extends AppCompatActivity {
                             // Se separa los atributos obtenidos mediante un split
                             String[] token = datosDataSetRouteOneDynamoDB.replaceAll("\\[", "").trim().replaceAll("\\]", "").trim().split(",");
                             //Mensaje de consola que presenta la información obtenida
-                            Log.d("DATOS ROUTE 1", Arrays.toString(token));
+                            Log.d("DATOS ROUTE 1_leerRouteOneDynamoDB", Arrays.toString(token));
                             // Retornando al hilo principal
                             runOnUiThread(new Runnable() {
                                 public void run() {
@@ -599,7 +622,7 @@ public class PrincipalActivity extends AppCompatActivity {
                                 }
                             });
                             //Se establece un tiempo entre la lectura de cada línea
-                            Thread.sleep(1000);
+                            Thread.sleep(INTERVALO_ENTRE_PETICIONES); // Usando variable específica para intervalo entre peticiones
                         } catch (Exception e) {
                             // Mensaje de error al no poder conectarse a la base de datos
                             Log.e("Error de conexión: ", e.getMessage());
@@ -641,20 +664,20 @@ public class PrincipalActivity extends AppCompatActivity {
                             // Se separa los atributos obtenidos mediante un split
                             String[] token = datosDataSetDynamoDB.replaceAll("\\[", "").trim().replaceAll("\\]", "").trim().split(",");
                             //Mensaje de consola que presenta la información obtenida
-                            Log.d("DATASET_LINEA", Arrays.toString(token));
+                            Log.d("DATASET_LINEA_leerDataSetDynamoDB", Arrays.toString(token));
                             // Retornando al hilo principal
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     //Enviando la información al servicio REST de AWS
-                                    Agente agenteRespuesta = new Agente(getApplicationContext(), "https://wsouotfzr3.execute-api.us-east-1.amazonaws.com/FaseBeta/Recursos_Predictor_Accidentes", String.valueOf(Double.parseDouble(token[39].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[41].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[5].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[7].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[8].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[17].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[13].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[14].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[20].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[38].replaceAll(" ", "").trim())));
+                                    Agente agenteRespuesta = new Agente(getApplicationContext(), URL_API_PREDICTOR, String.valueOf(Double.parseDouble(token[39].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[41].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[5].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[7].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[8].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[17].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[13].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[14].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[20].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[38].replaceAll(" ", "").trim())));
                                     //Ejecutando el servicio de AWS
                                     agenteRespuesta.execute();
-                                    //Enviando la información a presentar en pantalla con los datos del Dataset
+                                    //Enviando la información a presentar en pantalla with los datos del Dataset
                                     cambio.datosDataSet(String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[38].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[45].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[37].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[39].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[26].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), "La: " + Double.parseDouble(token[13].replaceAll(" ", "").trim()) + "\n" + "Lo: " + Double.parseDouble(token[14].replaceAll(" ", "").trim()), String.valueOf(Integer.parseInt(token[38].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[43].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[29].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[8].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[30].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[28].replaceAll(" ", "").trim())), token[21].replaceAll(" ", "").trim(), String.valueOf(Integer.parseInt(token[7].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[17].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[41].replaceAll(" ", "").trim())));
                                 }
                             });
                             //Se establece un tiempo entre la lectura de cada línea
-                            Thread.sleep(1000);
+                            Thread.sleep(INTERVALO_ENTRE_PETICIONES); // Usando variable específica para intervalo entre peticiones - LÍNEA PRINCIPAL PARA LAS PREDICCIONES ML
                         } catch (Exception e) {
                             // Mensaje de error al no poder conectarse a la base de datos
                             Log.e("Error de conexión: ", e.getMessage());
@@ -671,19 +694,20 @@ public class PrincipalActivity extends AppCompatActivity {
 
     public void finalizarLecturaOBD() {
         try {
-            myTimer.cancel();
+            if (myTimer != null) {
+                myTimer.cancel();
+                myTimer = null;
+            }
+            if (btSocket != null && btSocket.isConnected()) {
+                btSocket.close();
+            }
         } catch (Exception e) {
-            Log.e("Error", "OBD-2");
+            Log.e("PrincipalActivity", "Error finalizando OBD: " + e.getMessage());
         }
     }
 
     public void iniciarLecturaOBD() {
         // Método que inicia la lectura desde la interfaz OBD-II.
-        /*command_SpeedResult.setText("");
-        command_LoadResult.setText("");
-        command_RPMResult.setText("");
-        command_ThrottlePositionResult.setText("");
-        command_EngineCoolantTemperatureResult.setText("");*/
         long frecuencia = 5000;
         myTimer = new Timer();
         // myTimer.scheduleAtFixedRate(new TimerTask() {
@@ -694,24 +718,10 @@ public class PrincipalActivity extends AppCompatActivity {
                 try {
                     // Lectura de datos de 'Velocidad'.
                     command_Speed.run(btSocket.getInputStream(), btSocket.getOutputStream());
-                    // command_SpeedResult.setText(command_Speed.getCalculatedResult());
-                    // float velocidad = Float.parseFloat(command_SpeedResult.getText().toString());
-                    // Lectura de datos de 'Carga del motor'.
                     command_Load.run(btSocket.getInputStream(), btSocket.getOutputStream());
-                    // command_LoadResult.setText(command_Load.getCalculatedResult());
-                    // float engineLoad = Float.parseFloat(command_LoadResult.getText().toString());
-                    // Lectura de datos de 'RPM'.
                     command_RPM.run(btSocket.getInputStream(), btSocket.getOutputStream());
-                    // command_RPMResult.setText(command_RPM.getCalculatedResult());
-                    // float rpmResult = Float.parseFloat(command_RPMResult.getText().toString());
-                    // Lectura de datos de 'Posición del acelerador'.
                     command_ThrottlePosition.run(btSocket.getInputStream(), btSocket.getOutputStream());
-                    // command_ThrottlePositionResult.setText(command_ThrottlePosition.getCalculatedResult());
-                    // float throttlePosition = Float.parseFloat(command_ThrottlePositionResult.getText().toString());
-                    // Lectura de datos de 'Temperatura del refrigerante'.
                     command_EngineCoolantTemperature.run(btSocket.getInputStream(), btSocket.getOutputStream());
-                    // command_EngineCoolantTemperatureResult.setText(command_EngineCoolantTemperature.getCalculatedResult());
-                    // float engineCoolantTemperature = Float.parseFloat(command_EngineCoolantTemperatureResult.getText().toString());
                 } catch (RuntimeException runtimeException) {
                     Toast.makeText(getApplicationContext(), "RuntimeException: Could not initialize Timer" + runtimeException.getMessage(), Toast.LENGTH_LONG).show();
                 } catch (IOException ioException) {
@@ -899,8 +909,20 @@ public class PrincipalActivity extends AppCompatActivity {
 
     protected void onDestroy() {
         //Finalizando completamente la actividad Principal
-        super.onDestroy();
-        conversor.apagar();
+        try {
+            // Finalizar lectura OBD de manera segura
+            finalizarLecturaOBD();
+            
+            // Apagar conversor de voz
+            if (conversor != null) {
+                conversor.apagar();
+                conversor = null;
+            }
+        } catch (Exception e) {
+            Log.e("PrincipalActivity", "Error en onDestroy: " + e.getMessage());
+        } finally {
+            super.onDestroy();
+        }
     }
 
     public void leerDataSet() {
@@ -916,11 +938,11 @@ public class PrincipalActivity extends AppCompatActivity {
                 FragmentoModeloVista cambio = new FragmentoModeloVista();
                 String linea = "";
                 try {
-                    //Se va leyendo el Dataset línea por línea
+                     //Se va leyendo el Dataset línea por línea
                     lector.readLine();
                     while ((linea = lector.readLine()) != null) {
                         //Se establece un tiempo entre la lectura de cada línea
-                        Thread.sleep(1000);
+                        Thread.sleep(INTERVALO_ENTRE_PETICIONES); // Usando variable específica para intervalo entre peticiones
                         //Se establece un carácter que divide la cadena para extraer lo necesitado
                         String[] token = linea.split(",");
                         //Se llama al constructor del Dataset para presentar la información en el formato adecuado
@@ -977,16 +999,17 @@ public class PrincipalActivity extends AppCompatActivity {
                         //Mensaje de consola que presenta la información obtenida
                         Log.d("DATASET_LINEA", String.valueOf(obtenerDatos));
                         // Retornando al hilo principal
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                //Enviando la información al servicio REST de AWS
+                            // Retornando al hilo principal
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    //Enviando la información al servicio REST de AWS
                                 Agente agenteRespuesta = new Agente(getApplicationContext(), "https://wsouotfzr3.execute-api.us-east-1.amazonaws.com/FaseBeta/Recursos_Predictor_Accidentes", String.valueOf(Double.parseDouble(token[39])), String.valueOf(Integer.parseInt(token[3])), String.valueOf(Double.parseDouble(token[41])), String.valueOf(Double.parseDouble(token[5])), String.valueOf(Double.parseDouble(token[6])), String.valueOf(Integer.parseInt(token[7])), String.valueOf(Double.parseDouble(token[8])), String.valueOf(Integer.parseInt(token[17])), String.valueOf(Double.parseDouble(token[10])), String.valueOf(Double.parseDouble(token[13])), String.valueOf(Double.parseDouble(token[14])), String.valueOf(Integer.parseInt(token[20])), String.valueOf(Integer.parseInt(token[38])));
                                 //Ejecutando el servicio de AWS
                                 agenteRespuesta.execute();
                                 //Enviando la información a presentar en pantalla con los datos del Dataset
                                 cambio.datosDataSet(String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[38])), String.valueOf(Double.parseDouble(token[45])), String.valueOf(Double.parseDouble(token[37])), String.valueOf(Double.parseDouble(token[39])), String.valueOf(Double.parseDouble(token[26])), String.valueOf(Integer.parseInt(token[3])), "La: " + Double.parseDouble(token[13]) + "\n" + "Lo: " + Double.parseDouble(token[14]), String.valueOf(Integer.parseInt(token[38])), String.valueOf(Integer.parseInt(token[43])), String.valueOf(Integer.parseInt(token[29])), String.valueOf(Double.parseDouble(token[8])), String.valueOf(Integer.parseInt(token[3])), String.valueOf(Integer.parseInt(token[30])), String.valueOf(Double.parseDouble(token[28])), String.valueOf(token[21]), String.valueOf(Integer.parseInt(token[7])), String.valueOf(Integer.parseInt(token[17])), String.valueOf(Double.parseDouble(token[41])));
-                            }
-                        });
+                                 }
+                            });
                     }
                 } catch (Exception e) {
                     //Mensaje de consola que informa al usuario que n se pudo leer el Dataset
@@ -1061,7 +1084,7 @@ public class PrincipalActivity extends AppCompatActivity {
             // Método para leer el Dataset
             leerRouteOneDynamoDB();
             leerDataSetDynamoDB();
-            // leerDataSet();
+            //leerDataSet();
         } catch (Exception e) {
             //TODO
         }

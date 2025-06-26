@@ -33,6 +33,11 @@ android {
         buildConfigField "String", "CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY", "\"${CLASS_ACCUWEATHER_NETWORK_UTILS_APIKEY}\""
 
         buildConfigField "String", "CLASS_COMENTARIOS_ENLACE_WEB", "\"${CLASS_COMENTARIOS_ENLACE_WEB}\""
+
+        buildConfigField "String", "URL_API_PREDICTOR", "\"${URL_API_PREDICTOR}\""
+
+        buildConfigField "int", "TIMEOUT_API_PREDICTOR", "${TIMEOUT_API_PREDICTOR}"
+        buildConfigField "int", "INTERVALO_ENTRE_PETICIONES", "${INTERVALO_ENTRE_PETICIONES}"
     }
     buildTypes {
         release {

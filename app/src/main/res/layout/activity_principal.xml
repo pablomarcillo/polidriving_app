@@ -36,9 +36,8 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/visorMultiPagina"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="SpeakableTextPresentCheck">
-    </androidx.viewpager.widget.ViewPager>
+        android:layout_height="610dp"
+        tools:ignore="SpeakableTextPresentCheck"></androidx.viewpager.widget.ViewPager>
 
     <TextView
         android:id="@+id/txtSingInNombre"
@@ -81,6 +80,18 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             android:text="@string/riesgo_calculando"
+            android:textColor="@color/color_negro"
+            android:textSize="34sp"
+            tools:ignore="TextContrastCheck, TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/txtDatoRiesgoCalculado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="1"
+            android:text="@string/dato_riesgo_calculado"
             android:textColor="@color/color_negro"
             android:textSize="34sp"
             tools:ignore="TextContrastCheck, TextSizeCheck" />

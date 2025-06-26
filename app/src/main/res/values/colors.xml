@@ -13,4 +13,10 @@
     <color name="color_verde">#FF4BB453</color>
     <color name="color_rojo">#FFCC0000</color>
     <color name="color_hint">#FF808080</color>
+    <color name="colorPrimary">#FF6C8EEB</color>
+    <color name="colorAccent">#FF2C74A0</color>
+    <color name="color_vehiculo_actual">#FF2E7D32</color>
+    <color name="color_card_background">#FFFFFFFF</color>
+    <color name="color_card_stroke">#FFE0E0E0</color>
+    <color name="color_section_bg">#FFF8F9FA</color>
 </resources>

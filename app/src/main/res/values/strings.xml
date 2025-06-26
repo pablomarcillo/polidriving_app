@@ -1,11 +1,11 @@
 <!-- Creación de las cadenas de texto de la APP -->
 <resources>
     <string name="condiciones_servicios_informacion">Queda prohibido alterar o modificar ninguna parte de la APP a de los contenidas de la misma, eludir, desactivar o manipular de cualquier otra forma (o tratar de eludir, desactivar o manipular) las funciones de seguridad u otras funciones del programa y utilizar la APP o sus contenidos para un fin comercial o publicitario.</string>
-    <string name="politicas_usuario">Se recopilará datos de un modo que, por sí mismos, no pueden ser asociados directamente a una persona determinada. Estos datos de carácter no personal se pueden recopilar, tratar, transferir y publicar con cualquier intención.</string>
+    <string name="politicas_usuario">Se recopilará datos de un modo que, por si mismos, no pueden ser asociados directamente a una persona determinada. Estos datos de carácter no personal se pueden recopilar, tratar, transferir y publicar con cualquier intención.</string>
     <string name="recuperar_cuenta_informacion">RECUPERACIÓN DE LA CUENTA \n\n Si ha olvidado su contraseña ingrese su NOMBRE DE USUARIO con el cual se registro, se le enviará un código de confirmación al correo asociado al usuario para restablecer la contraseña.</string>
     <string name="informacion_configuracion">La configuración del usuario le permite configurar las preferencias de idioma y de correo electrónico, mientras que los datos de la cuenta le permiten controlar su configuración del uso compartido de datos.</string>
-    <string name="enviar_comentarios">ENVÍANOS TUS COMENTARIOS \n Queremos saber tu opinión sobre la APP. Comentanos sobre algún error en la APP o como podemos mejorar nuestro servicio</string>
-    <string name="lateral_ayuda">ENVÍANOS TUS COMENTARIOS \n Queremos saber tu opinión sobre la APP. Comentanos sobre algún error en la APP o como podemos mejorar nuestro servicio</string>
+    <string name="enviar_comentarios">ENViANOS TUS COMENTARIOS \n Queremos saber tu opinión sobre la APP. Comentanos sobre algún error en la APP o como podemos mejorar nuestro servicio</string>
+    <string name="lateral_ayuda">ENViANOS TUS COMENTARIOS \n Queremos saber tu opinión sobre la APP. Comentanos sobre algún error en la APP o como podemos mejorar nuestro servicio</string>
     <string name="error_singup">Error al crear el usuario. El nombre de usuario no debe tener espacios en blanco</string>
     <string name="ningun_dispositivo_bluetooth">No se ha seleccionado ningún dispositivo Bluetooth</string>
     <string name="codigo_enviado">Se ha enviado el Código de Verificación a su Correo Electrónico</string>
@@ -37,7 +37,7 @@
     <string name="guardar_configuraciones">Guardar Configuración</string>
     <string name="configuracion_usuario">Configuración de la APP</string>
     <string name="seleccion_throttle_position">Throttle Position</string>
-    <string name="politicas_privacidad">Políticas de Privacidad</string>
+    <string name="politicas_privacidad">Politicas de Privacidad</string>
     <string name="lectura_throttle_position">Posición Acelerador</string>
     <string name="temperatura_baja">Real Feel Temperature Shade</string>
     <string name="condiciones_usuario">Condiciones de Servicio</string>
@@ -66,7 +66,8 @@
     <string name="ayuda_comentarios">Ayuda y Comentarios</string>
     <string name="angulo_inclinacion">Ángulo Inclinación</string>
     <string name="elegir_dispositivo">Elegir Dispositivo</string>
-    <string name="riesgo_calculando">Riesgo: Calculando…</string>
+    <string name="riesgo_calculando">Riesgo:</string>
+    <string name="dato_riesgo_calculado"> Calculando…</string>
     <string name="usuario_apellido">Apellido de Cliente</string>
     <string name="tab_flujo">Condiciones Metereológicas</string>
     <string name="riesgo_accidente">Riesgo de Accidente</string>
@@ -75,7 +76,7 @@
     <string name="desea_cerrar_sesion">¿Cerrar Sesión?</string>
     <string name="verificar_usuario">Verificar Usuario</string>
     <string name="enviar_comentario">Enviar Comentario</string>
-    <string name="flujo_vehiculos">Número de Vehículos</string>
+    <string name="flujo_vehiculos">Número de Vehiculos</string>
     <string name="nuevo_nombre_usuario">Nombre Usuario</string>
     <string name="temperatura_motor">Temperatura Motor</string>
     <string name="condiciones_temperatura">Temperatura</string>
@@ -90,7 +91,7 @@
     <string name="ingresar_mensaje">Ingresar mensaje</string>
     <string name="correo_usuario">Correo Electrónico</string>
     <string name="telefono_usuario">Teléfono Usuario</string>
-    <string name="politicas">Políticas de Privacidad</string>
+    <string name="politicas">Politicas de Privacidad</string>
     <string name="usuario_invalido">Usuario Inválido</string>
     <string name="verificar_codigo">Verificar Código</string>
     <string name="cambiar_satelital">Vista Satelital</string>
@@ -133,8 +134,8 @@
     <string name="seleccion_velocidad">Velocidad</string>
     <string name="parametros_obd">Parámetros OBD</string>
     <string name="estado_clima">Estado del Clima</string>
-    <string name="ritmo_cardiaco">Ritmo Cardíaco</string>
-    <string name="tab_datos">Datos del Vehículo</string>
+    <string name="ritmo_cardiaco">Ritmo Cardiaco</string>
+    <string name="tab_datos">Datos del Vehiculo</string>
     <string name="velocidad_vehiculo">Velocidad</string>
     <string name="temperatura_alta">Temperatura</string>
     <string name="nombre_principal">POLIDriving</string>
@@ -154,7 +155,7 @@
     <string name="clima_actual">Clima Actual</string>
     <string name="fecha_actual">Fecha Actual</string>
     <string name="enlace_movil">Enlace Móvil</string>
-    <string name="tab_accidentes">Accid. y Vía</string>
+    <string name="tab_accidentes">Accid. y Via</string>
     <string name="uso_lentes">Uso de Lentes</string>
     <string name="nuevo_cancelar">Cancelar</string>
     <string name="bienvenido">"Bienvenido"</string>
@@ -174,12 +175,12 @@
     <string name="hola_mundo">HOLA MUNDO</string>
     <string name="mensaje_alerta">ALERTA</string>
     <string name="privacidad">Privacidad</string>
-    <string name="tab_vehiculo">Vehículo</string>
+    <string name="tab_vehiculo">Vehiculo</string>
     <string name="tipo_0">Administrador</string>
     <string name="valor_ejemplo_2">XXXX</string>
     <string name="medida_ejemplo">100%</string>
-    <string name="indice_uv">Índice UV</string>
-    <string name="id_via">ID de la vía</string>
+    <string name="indice_uv">indice UV</string>
+    <string name="id_via">ID de la via</string>
     <string name="nubosidad">Nubosidad</string>
     <string name="tab_riesgos">Riesgo</string>
     <string name="longitud">Longitud</string>
@@ -198,6 +199,30 @@
     <string name="cuenta">Cuenta</string>
     <string name="salir">Salir</string>
     <string name="ayuda">Ayuda</string>
+    <string name="vehiculos">Vehiculos</string>
+    <string name="agregar_vehiculo">Agregar Vehiculo</string>
+    <string name="editar_vehiculo">Editar Vehiculo</string>
+    <string name="eliminar_vehiculo">Eliminar Vehiculo</string>
+    <string name="seleccionar_vehiculo">Seleccionar Vehiculo</string>
+    <string name="vehiculo_actual">Vehiculo Actual</string>
+    <string name="marca">Marca</string>
+    <string name="modelo">Modelo</string>
+    <string name="año_fabricacion">Año de Fabricación</string>
+    <string name="tipo_combustible">Tipo de Combustible</string>
+    <string name="cilindraje">Cilindraje</string>
+    <string name="tipo_carroceria">Tipo de Carroceria</string>
+    <string name="transmision">Transmisión</string>
+    <string name="traccion">Tracción</string>
+    <string name="color_vehiculo">Color del Vehiculo</string>
+    <string name="placa_vehiculo">Placa del Vehiculo</string>
+    <string name="vehiculo_guardado">Vehiculo guardado con éxito</string>
+    <string name="vehiculo_actualizado">Vehiculo actualizado con éxito</string>
+    <string name="vehiculo_eliminado">Vehiculo eliminado con éxito</string>
+    <string name="vehiculo_seleccionado">Vehiculo seleccionado como actual</string>
+    <string name="error_guardar_vehiculo">Error al guardar el vehiculo</string>
+    <string name="confirmar_eliminar">¿Está seguro de eliminar este vehiculo?</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="eliminar">Eliminar</string>
     <string name="ok">OK</string>
     <string name="a">a</string>
 </resources>

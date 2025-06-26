@@ -7,6 +7,9 @@ package com.polidriving.mobile.clases.principal;
 //Clases usadas para el mapeo de cadenas
 //Clases para el uso de URL
 import com.polidriving.mobile.base_datos.DataBaseAccess;
+import com.polidriving.mobile.BuildConfig;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.auth.AuthUserAttribute;
 import java.nio.charset.StandardCharsets;
 import android.annotation.SuppressLint;
 import java.io.BufferedOutputStream;
@@ -20,9 +23,16 @@ import java.io.OutputStream;
 import android.os.AsyncTask;
 import org.json.JSONObject;
 import java.util.Iterator;
-//import java.util.Random;
 import android.util.Log;
 import java.net.URL;
+import java.text.DateFormat;
+import java.util.Date;
+
+// Interfaz para callback del correo de usuario
+interface CorreoUsuarioCallback {
+    void onCorreoObtenido(String correo);
+    void onError(String error);
+}
 
 /**
  * @noinspection DataFlowIssue
@@ -47,6 +57,8 @@ public class Agente extends AsyncTask<String, String, String> {
     public String latitude;
     public String speed;
     public String rpm_;
+    public String timestamp; // Variable para almacenar el timestamp de la predicción
+    public String correoUsuario; // Variable para almacenar el correo del usuario logueado
 
 
     public Agente(Context contexto, String linkAPI, String steering_angle_R, String speed_R, String rpm_R, String acceleration_R, String throttle_position_R, String engine_temperature_R, String system_voltage_R, String heart_rate_R, String distance_travelled_R, String latitude_R, String longitude_R, String current_weather_R, String accidents_onsite_R) {
@@ -67,6 +79,8 @@ public class Agente extends AsyncTask<String, String, String> {
         this.httContext = contexto;
         this.speed = speed_R;
         this.rpm_ = rpm_R;
+        // Generando timestamp para esta predicción
+        this.timestamp = java.text.DateFormat.getDateTimeInstance().format(new java.util.Date());
     }
 
     public String getPostDataString(JSONObject params) throws Exception {
@@ -97,9 +111,9 @@ public class Agente extends AsyncTask<String, String, String> {
             JSONObject parametrosPost = new JSONObject();
             //Agregando a la consulta POST los datos de consulta
             parametrosPost.put("Input", "[[" + steering_angle_ + ", " + speed + ", " + rpm_ + ", " + acceleration + ", " + throttle_position + ", " + engine_temperature + ", " + system_voltage + ", " + heart_rate + ", " + distance_travelled + ", " + latitude + ", " + longitude + ", " + current_weather + ", " + accidents_onsite + "]]");
-            //Estableciendo las características de consulta POST
-            urlConnection.setReadTimeout(5000);
-            urlConnection.setConnectTimeout(5000);
+            //Estableciendo las características de consulta POST con timeout configurado desde BuildConfig
+            urlConnection.setReadTimeout(BuildConfig.TIMEOUT_API_PREDICTOR);
+            urlConnection.setConnectTimeout(BuildConfig.TIMEOUT_API_PREDICTOR);
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
@@ -144,7 +158,55 @@ public class Agente extends AsyncTask<String, String, String> {
         super.onPostExecute(s);
         FragmentoModeloVista cambio = new FragmentoModeloVista();
         // Se separa los atributos obtenidos mediante un split
-        String[] idDataBase = s.replaceAll("\\{\\\"Output\\\": ", "").trim().replaceAll("\\}", "").trim().split(",");
+        // Extraer el valor del Output desde la estructura JSON anidada
+        String[] idDataBase = s.replaceAll(".*\\\"body\\\":\\s*\\\"\\{\\\\\\\"Output\\\\\\\":\\s*", "").trim().replaceAll("\\}\\\".*", "").trim().split(",");
+        
+        // Guardar la predicción en DynamoDB
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    // Primero obtener el correo del usuario logueado
+                    obtenerCorreoUsuarioLogueado(new CorreoUsuarioCallback() {
+                        @Override
+                        public void onCorreoObtenido(String correo) {
+                            try {
+                                DataBaseAccess dbAccess = new DataBaseAccess();
+                                // Obtener la placa del vehículo actual
+                                String placaVehiculo = dbAccess.obtenerPlacaVehiculoActual(correo);
+                                String resultadoGuardado = (String) dbAccess.guardarPrediccionML(
+                                    steering_angle_, speed, rpm_, acceleration, throttle_position, 
+                                    engine_temperature, system_voltage, heart_rate, distance_travelled, 
+                                    latitude, longitude, current_weather, accidents_onsite, correo, placaVehiculo, idDataBase[0], timestamp
+                                );
+                                Log.i("PREDICCION_GUARDADA: ", resultadoGuardado.toString());
+                            } catch (Exception e) {
+                                Log.e("ERROR_GUARDAR_PREDICCION: ", e.getMessage());
+                            }
+                        }
+                        
+                        @Override
+                        public void onError(String error) {
+                            Log.e("ERROR_OBTENER_CORREO: ", error);
+                            // Guardar con correo por defecto en caso de error
+                            try {
+                                DataBaseAccess dbAccess = new DataBaseAccess();
+                                String resultadoGuardado = (String) dbAccess.guardarPrediccionML(
+                                    steering_angle_, speed, rpm_, acceleration, throttle_position, 
+                                    engine_temperature, system_voltage, heart_rate, distance_travelled, 
+                                    latitude, longitude, current_weather, accidents_onsite, "correo_no_disponible", "SIN_VEHICULO", idDataBase[0], timestamp
+                                );
+                                Log.i("PREDICCION_GUARDADA_SIN_CORREO: ", resultadoGuardado.toString());
+                            } catch (Exception e) {
+                                Log.e("ERROR_GUARDAR_PREDICCION_FALLBACK: ", e.getMessage());
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("ERROR_OBTENER_USUARIO: ", e.getMessage());
+                }
+            }
+        }).start();
+        
         //Segmento de código que permite leer el Dataset con los datos generados por el vehículo
         new Thread(new Runnable() {
             //Para la lectura se genera un hilo secundario, con el fin de estar leyendo el data set continuamente
@@ -172,14 +234,6 @@ public class Agente extends AsyncTask<String, String, String> {
                 }
             }
         }).start();
-
-        // Crear una instancia de la clase Random para pruebas de funcionamiento
-        /*Random random = new Random();
-        // Generar un número aleatorio entre 1 y 4 (Diferentes tipos de respuesta)
-        int randomNumber = random.nextInt(4) + 1;
-        Log.i("Número Aleatorio Generado: ", String.valueOf(randomNumber));
-        s = "{\"Output\": " + randomNumber + "}";*/
-
         // Envió de la respuesta para presentar al usuario
         cambio.datosRespuesta(s);
         //Mensaje de consola que permite mostrar el resultado del servicio REST
@@ -191,5 +245,53 @@ public class Agente extends AsyncTask<String, String, String> {
         //Segmento de código que se ejecuta después del obtener la respuesta del servicio REST
         super.onPreExecute();
         //TODO
+    }
+    
+    /**
+     * Método para obtener el correo del usuario logueado mediante Amplify Auth
+     */
+    private void obtenerCorreoUsuarioLogueado(CorreoUsuarioCallback callback) {
+        try {
+            Amplify.Auth.getCurrentUser(
+                result -> {
+                    // Obtener los atributos del usuario para obtener el correo real
+                    Amplify.Auth.fetchUserAttributes(
+                        attributes -> {
+                            String correoUsuario = null;
+                            for (AuthUserAttribute attribute : attributes) {
+                                if (attribute.getKey().getKeyString().equals("email")) {
+                                    correoUsuario = attribute.getValue();
+                                    Log.i("CORREO_OBTENIDO_DIRECTO: ", correoUsuario);
+                                    break;
+                                }
+                            }
+                            
+                            if (correoUsuario != null && !correoUsuario.isEmpty()) {
+                                callback.onCorreoObtenido(correoUsuario);
+                            } else {
+                                // Fallback: usar username si no se encuentra email
+                                String username = result.getUsername();
+                                Log.i("FALLBACK_USERNAME: ", username);
+                                callback.onCorreoObtenido(username);
+                            }
+                        },
+                        error -> {
+                            Log.e("ERROR_FETCH_ATTRIBUTES: ", error.toString());
+                            // Fallback: usar username en caso de error
+                            String username = result.getUsername();
+                            Log.i("FALLBACK_USERNAME_ERROR: ", username);
+                            callback.onCorreoObtenido(username);
+                        }
+                    );
+                },
+                error -> {
+                    Log.e("ERROR_AUTH_USER: ", error.toString());
+                    callback.onError("Error al obtener el usuario autenticado: " + error.toString());
+                }
+            );
+        } catch (Exception e) {
+            Log.e("ERROR_AMPLIFY_AUTH: ", e.getMessage());
+            callback.onError("Error en Amplify Auth: " + e.getMessage());
+        }
     }
 }

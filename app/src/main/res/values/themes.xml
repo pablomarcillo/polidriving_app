@@ -19,4 +19,20 @@
     <style name="Theme.polidriving.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="Base.Theme.polidriving" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
+    
+    <!-- Estilo personalizado para TextInputLayout del diálogo de vehículo -->
+    <style name="CustomTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="hintTextColor">@color/colorPrimary</item>
+        <item name="android:textColorHint">@color/color_hint</item>
+        <item name="boxBackgroundColor">@color/color_blanco</item>
+        <item name="startIconTint">@color/colorPrimary</item>
+        <item name="endIconTint">@color/colorPrimary</item>
+    </style>
+    
 </resources>

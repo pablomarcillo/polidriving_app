@@ -15,6 +15,10 @@
             android:id="@+id/configuracion_usuario"
             android:icon="@drawable/configuracion"
             android:title="@string/configuracion_usuario" />
+        <item
+            android:id="@+id/configuracion_vehiculos"
+            android:icon="@drawable/vehiculo"
+            android:title="@string/vehiculos" />
     </group>
 
     <group

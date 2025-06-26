@@ -62,7 +62,6 @@ public class FragmentosAccidentes extends Fragment {
     Boolean get_set_Media = false;
     Boolean get_set_Alta = false;
     Boolean get_set_Baja = false;
-    //static TextView porcentaje;
     static TextView velocidad;
     static TextView segmento;
     static TextView longitud;
@@ -72,11 +71,8 @@ public class FragmentosAccidentes extends Fragment {
     static TextView onHour;
     static TextView actual;
     static TextView via;
-
-
     static TextView longitudReal;
     static TextView latitudReal;
-
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // Verificando los permisos para obtener la latitud y longitud del usuario mediante GPS

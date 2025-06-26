@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F5F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header con icono y título -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/dialog_header_bg"
+            android:padding="20dp"
+            android:elevation="4dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_car"
+                android:layout_marginEnd="12dp"
+                android:tint="@color/color_blanco" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Configuración de Vehículo"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/color_blanco"
+                android:fontFamily="sans-serif-medium" />
+
+        </LinearLayout>
+
+        <!-- Sección: Información Básica -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/section_card_bg"
+            android:padding="20dp"
+            android:layout_marginBottom="18dp"
+            android:elevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_info"
+                    android:layout_marginEnd="10dp"
+                    android:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="INFORMACIÓN BÁSICA"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:letterSpacing="0.1"
+                    android:fontFamily="sans-serif-medium" />
+
+            </LinearLayout>
+
+            <!-- Marca -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CustomTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:startIconDrawable="@drawable/ic_brand"
+                app:startIconTint="@color/colorPrimary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/etMarca"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/marca"
+                    android:inputType="textCapWords"
+                    android:maxLength="50"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Modelo -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CustomTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:startIconDrawable="@drawable/ic_model"
+                app:startIconTint="@color/colorPrimary">
+
+                <EditText
+                    android:id="@+id/etModelo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/modelo"
+                    android:inputType="textCapWords"
+                    android:maxLength="50"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Año y Placa en fila -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Año de fabricación -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/CustomTextInputLayoutStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:startIconDrawable="@drawable/ic_calendar"
+                    app:startIconTint="@color/colorPrimary">
+
+                    <EditText
+                        android:id="@+id/etAno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/año_fabricacion"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Placa -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/CustomTextInputLayoutStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:startIconDrawable="@drawable/ic_license_plate"
+                    app:startIconTint="@color/colorPrimary">
+
+                    <EditText
+                        android:id="@+id/etPlaca"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/placa_vehiculo"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="10"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Sección: Especificaciones Técnicas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/section_card_bg"
+            android:padding="20dp"
+            android:layout_marginBottom="18dp"
+            android:elevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_engine"
+                    android:layout_marginEnd="10dp"
+                    android:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ESPECIFICACIONES TÉCNICAS"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:letterSpacing="0.1"
+                    android:fontFamily="sans-serif-medium" />
+
+            </LinearLayout>
+
+            <!-- Tipo de combustible -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CustomTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:startIconDrawable="@drawable/ic_fuel"
+                app:startIconTint="@color/colorPrimary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/etTipoCombustible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/tipo_combustible"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Cilindraje -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CustomTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:startIconDrawable="@drawable/ic_cylinder"
+                app:startIconTint="@color/colorPrimary"
+                app:suffixText="cc">
+
+                <EditText
+                    android:id="@+id/etCilindraje"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/cilindraje"
+                    android:inputType="number"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Transmisión y Tracción en fila -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Transmisión -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/CustomTextInputLayoutStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:startIconDrawable="@drawable/ic_transmission"
+                    app:startIconTint="@color/colorPrimary">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/etTransmision"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/transmision"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Tracción -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/CustomTextInputLayoutStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:startIconDrawable="@drawable/ic_traction"
+                    app:startIconTint="@color/colorPrimary">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/etTraccion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/traccion"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Sección: Características Físicas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/section_card_bg"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp"
+            android:elevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_car_body"
+                    android:layout_marginEnd="10dp"
+                    android:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="CARACTERÍSTICAS FÍSICAS"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:letterSpacing="0.1"
+                    android:fontFamily="sans-serif-medium" />
+
+            </LinearLayout>
+
+            <!-- Tipo de carrocería -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CustomTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:startIconDrawable="@drawable/ic_body_type"
+                app:startIconTint="@color/colorPrimary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/etTipoCarroceria"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/tipo_carroceria"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Color -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/CustomTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:startIconDrawable="@drawable/ic_color_palette"
+                app:startIconTint="@color/colorPrimary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/etColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/color_vehiculo"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- Nota informativa -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/info_note_bg"
+            android:padding="12dp"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_info_outline"
+                android:layout_marginEnd="8dp"
+                android:tint="@color/color_hint" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Complete todos los campos para registrar el vehículo"
+                android:textSize="12sp"
+                android:textColor="@color/color_hint"
+                android:fontStyle="italic"
+                android:fontFamily="sans-serif" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

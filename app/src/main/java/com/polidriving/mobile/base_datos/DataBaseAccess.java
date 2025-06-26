@@ -1,7 +1,7 @@
 //Paquete que contiene un conjunto de clases relacionadas por finalidad, ámbito y herencia
 package com.polidriving.mobile.base_datos;
 import com.polidriving.mobile.BuildConfig;
-
+import com.polidriving.mobile.clases.vehiculos.Vehiculo;
 
 //Clases usadas para el CRUD de usuarios en la base de datos DYNAMODB
 //Clases usadas para la conexión con AWS mediante Amplify y Cognito
@@ -28,6 +28,8 @@ public class DataBaseAccess {
     private final String DYNAMODB_TABLE_DATASET = "DataSet";
     private final String DYNAMODB_TABLE_ROUTE_1 = "Route_1";
     private final String DYNAMODB_TABLE_DATA = "UserData";
+    private final String DYNAMODB_TABLE_PREDICCIONES = "ML_Predicciones";
+    private final String DYNAMODB_TABLE_VEHICLES = "Vehicle";
     private AmazonDynamoDBClient dbClient_1;
 
     public CharSequence actualizarUsuario(String puntos, String estado, String user, String telefono, String tipo, String correo, String edad, String apellido, String medicas, String nombre, String genero, String lentes) {
@@ -403,5 +405,399 @@ public class DataBaseAccess {
 
         // Enviando al usuario los atributos
         return atributos.toString();
+    }
+
+    public CharSequence guardarPrediccionML(String steering_angle,   String speed,              String rpm, 
+                                            String acceleration,     String throttle_position,  String engine_temperature, 
+                                            String system_voltage,   String heart_rate,         String distance_travelled, 
+                                            String latitude,         String longitude,          String current_weather, 
+                                            String accidents_onsite, String correoUsuario,      String placaVehiculo,
+                                            String respuestaModelo,  String timestamp) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Agregando la lista de atributos a la base de datos para la predicción del modelo ML
+        Map<String, AttributeValue> nuevaPrediccion = new HashMap<>();
+
+        // Generando un ID único basado en timestamp y datos
+        String predictionId = String.valueOf(System.currentTimeMillis());
+
+        // Datos de entrada al modelo
+        nuevaPrediccion.put("PredictionId", new AttributeValue(predictionId));
+        nuevaPrediccion.put("CorreoUsuario", new AttributeValue(correoUsuario));
+        nuevaPrediccion.put("PlacaVehiculo", new AttributeValue(placaVehiculo));
+        nuevaPrediccion.put("SteeringAngle", new AttributeValue().withN(steering_angle));
+        nuevaPrediccion.put("Speed", new AttributeValue().withN(speed));
+        nuevaPrediccion.put("RPM", new AttributeValue().withN(rpm));
+        nuevaPrediccion.put("Acceleration", new AttributeValue().withN(acceleration));
+        nuevaPrediccion.put("ThrottlePosition", new AttributeValue().withN(throttle_position));
+        nuevaPrediccion.put("EngineTemperature", new AttributeValue().withN(engine_temperature));
+        nuevaPrediccion.put("SystemVoltage", new AttributeValue().withN(system_voltage));
+        nuevaPrediccion.put("HeartRate", new AttributeValue().withN(heart_rate));
+        nuevaPrediccion.put("DistanceTravelled", new AttributeValue().withN(distance_travelled));
+        nuevaPrediccion.put("Latitude", new AttributeValue().withN(latitude));
+        nuevaPrediccion.put("Longitude", new AttributeValue().withN(longitude));
+        nuevaPrediccion.put("CurrentWeather", new AttributeValue().withN(current_weather));
+        nuevaPrediccion.put("AccidentsOnsite", new AttributeValue().withN(accidents_onsite));
+
+        // Timestamp de la predicción
+        nuevaPrediccion.put("Timestamp", new AttributeValue(timestamp));
+        // Extraer solo el valor numérico de la respuesta del modelo
+        nuevaPrediccion.put("ModelResponse", new AttributeValue(respuestaModelo));
+
+        // Realizando la petición a la base de datos para agregar un nuevo elemento
+        PutItemRequest peticion = new PutItemRequest();
+        // Enviando el nombre de la Tabla de la base de datos
+        peticion.withTableName(DYNAMODB_TABLE_PREDICCIONES).withItem(nuevaPrediccion);
+        // Se adquiere la respuesta desde la base de datos
+        PutItemResult respuesta = dbClient_1.putItem(peticion);
+
+        // Enviando al usuario la respuesta de la base de datos
+        return respuesta.toString();
+    }
+
+    // ===== MÉTODOS CRUD PARA VEHÍCULOS =====
+
+    /**
+     * Método para agregar un nuevo vehículo
+     */
+    public CharSequence agregarVehiculo(String placa, String marca, String modelo, String anoFabricacion, 
+                                       String tipoCombustible, String cilindraje, String tipoCarroceria, 
+                                       String transmision, String traccion, String color, String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Agregando la lista de atributos a la base de datos
+        Map<String, AttributeValue> nuevoVehiculo = new HashMap<>();
+        nuevoVehiculo.put("Placa", new AttributeValue(placa));
+        nuevoVehiculo.put("Marca", new AttributeValue(marca));
+        nuevoVehiculo.put("Modelo", new AttributeValue(modelo));
+        nuevoVehiculo.put("AnoFabricacion", new AttributeValue().withN(anoFabricacion));
+        nuevoVehiculo.put("TipoCombustible", new AttributeValue(tipoCombustible));
+        nuevoVehiculo.put("Cilindraje", new AttributeValue().withN(cilindraje));
+        nuevoVehiculo.put("TipoCarroceria", new AttributeValue(tipoCarroceria));
+        nuevoVehiculo.put("Transmision", new AttributeValue(transmision));
+        nuevoVehiculo.put("Traccion", new AttributeValue(traccion));
+        nuevoVehiculo.put("Color", new AttributeValue(color));
+        nuevoVehiculo.put("CorreoUsuario", new AttributeValue(correoUsuario));
+        nuevoVehiculo.put("EsVehiculoActual", new AttributeValue().withBOOL(false));
+
+        // Realizando la petición a la base de datos para agregar un nuevo elemento
+        PutItemRequest peticion = new PutItemRequest();
+        peticion.withTableName(DYNAMODB_TABLE_VEHICLES).withItem(nuevoVehiculo);
+        PutItemResult respuesta = dbClient_1.putItem(peticion);
+
+        return respuesta.toString();
+    }
+
+    /**
+     * Método para actualizar un vehículo existente
+     */
+    public CharSequence actualizarVehiculo(String placa, String marca, String modelo, String anoFabricacion, 
+                                          String tipoCombustible, String cilindraje, String tipoCarroceria, 
+                                          String transmision, String traccion, String color, String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Agregando la lista de atributos a la base de datos
+        Map<String, AttributeValue> vehiculoActualizado = new HashMap<>();
+        vehiculoActualizado.put("Placa", new AttributeValue(placa));
+        vehiculoActualizado.put("Marca", new AttributeValue(marca));
+        vehiculoActualizado.put("Modelo", new AttributeValue(modelo));
+        vehiculoActualizado.put("AnoFabricacion", new AttributeValue().withN(anoFabricacion));
+        vehiculoActualizado.put("TipoCombustible", new AttributeValue(tipoCombustible));
+        vehiculoActualizado.put("Cilindraje", new AttributeValue().withN(cilindraje));
+        vehiculoActualizado.put("TipoCarroceria", new AttributeValue(tipoCarroceria));
+        vehiculoActualizado.put("Transmision", new AttributeValue(transmision));
+        vehiculoActualizado.put("Traccion", new AttributeValue(traccion));
+        vehiculoActualizado.put("Color", new AttributeValue(color));
+        vehiculoActualizado.put("CorreoUsuario", new AttributeValue(correoUsuario));
+
+        // Obtener el estado actual del vehículo para mantener EsVehiculoActual
+        String vehiculoExistente = (String) obtenerVehiculo(placa, correoUsuario);
+        boolean esActual = false;
+        if (!vehiculoExistente.equals("[]")) {
+            // Parsear para obtener el estado actual
+            String[] datos = vehiculoExistente.replaceAll("\\[", "").trim().replaceAll("\\]", "").trim().split(",");
+            if (datos.length > 11) {
+                esActual = Boolean.parseBoolean(datos[11].trim());
+            }
+        }
+        vehiculoActualizado.put("EsVehiculoActual", new AttributeValue().withBOOL(esActual));
+
+        // Realizando la petición a la base de datos para actualizar
+        PutItemRequest peticion = new PutItemRequest();
+        peticion.withTableName(DYNAMODB_TABLE_VEHICLES).withItem(vehiculoActualizado);
+        PutItemResult respuesta = dbClient_1.putItem(peticion);
+
+        return respuesta.toString();
+    }
+
+    /**
+     * Método para eliminar un vehículo
+     */
+    public CharSequence eliminarVehiculo(String placa, String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Crear la clave para eliminar
+        Map<String, AttributeValue> clave = new HashMap<>();
+        clave.put("Placa", new AttributeValue(placa));
+        clave.put("CorreoUsuario", new AttributeValue(correoUsuario));
+
+        // Realizando la petición a la base de datos para eliminar
+        DeleteItemRequest peticion = new DeleteItemRequest();
+        peticion.withTableName(DYNAMODB_TABLE_VEHICLES).withKey(clave);
+        DeleteItemResult respuesta = dbClient_1.deleteItem(peticion);
+
+        return respuesta.toString();
+    }
+
+    /**
+     * Método para obtener un vehículo específico
+     */
+    public CharSequence obtenerVehiculo(String placa, String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Realizando una petición a la base de datos
+        ScanRequest peticion = new ScanRequest(DYNAMODB_TABLE_VEHICLES);
+        ScanResult respuesta = dbClient_1.scan(peticion);
+        List<Map<String, AttributeValue>> elementos = respuesta.getItems();
+
+        List<String> atributos = new ArrayList<>();
+        for (Map<String, AttributeValue> map : elementos) {
+            String placaVehiculo = Objects.requireNonNull(map.get("Placa")).getS();
+            String correoVehiculo = Objects.requireNonNull(map.get("CorreoUsuario")).getS();
+
+            if (placaVehiculo.equals(placa) && correoVehiculo.equals(correoUsuario)) {
+                atributos.add(Objects.requireNonNull(map.get("Placa")).getS()); //0
+                atributos.add(Objects.requireNonNull(map.get("Marca")).getS()); //1
+                atributos.add(Objects.requireNonNull(map.get("Modelo")).getS()); //2
+                atributos.add(Objects.requireNonNull(map.get("AnoFabricacion")).getN()); //3
+                atributos.add(Objects.requireNonNull(map.get("TipoCombustible")).getS()); //4
+                atributos.add(Objects.requireNonNull(map.get("Cilindraje")).getN()); //5
+                atributos.add(Objects.requireNonNull(map.get("TipoCarroceria")).getS()); //6
+                atributos.add(Objects.requireNonNull(map.get("Transmision")).getS()); //7
+                atributos.add(Objects.requireNonNull(map.get("Traccion")).getS()); //8
+                atributos.add(Objects.requireNonNull(map.get("Color")).getS()); //9
+                atributos.add(Objects.requireNonNull(map.get("CorreoUsuario")).getS()); //10
+                atributos.add(String.valueOf(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL())); //11
+                break;
+            }
+        }
+
+        return atributos.toString();
+    }
+
+    /**
+     * Método para obtener todos los vehículos de un usuario
+     */
+    public CharSequence obtenerVehiculosUsuario(String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Realizando una petición a la base de datos
+        ScanRequest peticion = new ScanRequest(DYNAMODB_TABLE_VEHICLES);
+        ScanResult respuesta = dbClient_1.scan(peticion);
+        List<Map<String, AttributeValue>> elementos = respuesta.getItems();
+
+        List<String> vehiculos = new ArrayList<>();
+        for (Map<String, AttributeValue> map : elementos) {
+            String correoVehiculo = Objects.requireNonNull(map.get("CorreoUsuario")).getS();
+
+            if (correoVehiculo.equals(correoUsuario)) {
+                // Crear una cadena con los datos del vehículo separados por |
+                String vehiculoInfo = Objects.requireNonNull(map.get("Placa")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("Marca")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("Modelo")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("AnoFabricacion")).getN() + "|" +
+                                    Objects.requireNonNull(map.get("TipoCombustible")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("Cilindraje")).getN() + "|" +
+                                    Objects.requireNonNull(map.get("TipoCarroceria")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("Transmision")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("Traccion")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("Color")).getS() + "|" +
+                                    Objects.requireNonNull(map.get("CorreoUsuario")).getS() + "|" +
+                                    String.valueOf(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL());
+                vehiculos.add(vehiculoInfo);
+            }
+        }
+
+        return vehiculos.toString();
+    }
+
+    /**
+     * Método para establecer un vehículo como actual
+     */
+    public CharSequence establecerVehiculoActual(String placa, String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Primero, desmarcar todos los vehículos del usuario como actuales
+        String vehiculosUsuario = (String) obtenerVehiculosUsuario(correoUsuario);
+        if (!vehiculosUsuario.equals("[]")) {
+            String[] vehiculosArray = vehiculosUsuario.replaceAll("\\[", "").trim().replaceAll("\\]", "").trim().split(",");
+            for (String vehiculoInfo : vehiculosArray) {
+                String[] datos = vehiculoInfo.trim().split("\\|");
+                if (datos.length > 0) {
+                    String placaVehiculo = datos[0].trim();
+                    // Actualizar para que no sea vehículo actual
+                    actualizarEstadoVehiculoActual(placaVehiculo, correoUsuario, false);
+                }
+            }
+        }
+
+        // Ahora marcar el vehículo seleccionado como actual
+        String resultado = (String) actualizarEstadoVehiculoActual(placa, correoUsuario, true);
+        return resultado;
+    }
+
+    /**
+     * Método auxiliar para actualizar el estado de vehículo actual
+     */
+    private CharSequence actualizarEstadoVehiculoActual(String placa, String correoUsuario, boolean esActual) {
+        // Obtener el vehículo completo
+        String vehiculoExistente = (String) obtenerVehiculo(placa, correoUsuario);
+        if (vehiculoExistente.equals("[]")) {
+            return "Vehículo no encontrado";
+        }
+
+        // Parsear los datos del vehículo
+        String[] datos = vehiculoExistente.replaceAll("\\[", "").trim().replaceAll("\\]", "").trim().split(",");
+        if (datos.length < 11) {
+            return "Datos del vehículo incompletos";
+        }
+
+        // Crear el vehículo actualizado
+        Map<String, AttributeValue> vehiculoActualizado = new HashMap<>();
+        vehiculoActualizado.put("Placa", new AttributeValue(datos[0].trim()));
+        vehiculoActualizado.put("Marca", new AttributeValue(datos[1].trim()));
+        vehiculoActualizado.put("Modelo", new AttributeValue(datos[2].trim()));
+        vehiculoActualizado.put("AnoFabricacion", new AttributeValue().withN(datos[3].trim()));
+        vehiculoActualizado.put("TipoCombustible", new AttributeValue(datos[4].trim()));
+        vehiculoActualizado.put("Cilindraje", new AttributeValue().withN(datos[5].trim()));
+        vehiculoActualizado.put("TipoCarroceria", new AttributeValue(datos[6].trim()));
+        vehiculoActualizado.put("Transmision", new AttributeValue(datos[7].trim()));
+        vehiculoActualizado.put("Traccion", new AttributeValue(datos[8].trim()));
+        vehiculoActualizado.put("Color", new AttributeValue(datos[9].trim()));
+        vehiculoActualizado.put("CorreoUsuario", new AttributeValue(datos[10].trim()));
+        vehiculoActualizado.put("EsVehiculoActual", new AttributeValue().withBOOL(esActual));
+
+        // Realizando la petición a la base de datos para actualizar
+        PutItemRequest peticion = new PutItemRequest();
+        peticion.withTableName(DYNAMODB_TABLE_VEHICLES).withItem(vehiculoActualizado);
+        PutItemResult respuesta = dbClient_1.putItem(peticion);
+
+        return respuesta.toString();
+    }
+
+    /**
+     * Método para obtener el vehículo actual del usuario
+     */
+    public CharSequence obtenerVehiculoActual(String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Realizando una petición a la base de datos
+        ScanRequest peticion = new ScanRequest(DYNAMODB_TABLE_VEHICLES);
+        ScanResult respuesta = dbClient_1.scan(peticion);
+        List<Map<String, AttributeValue>> elementos = respuesta.getItems();
+
+        List<String> atributos = new ArrayList<>();
+        for (Map<String, AttributeValue> map : elementos) {
+            String correoVehiculo = Objects.requireNonNull(map.get("CorreoUsuario")).getS();
+            boolean esVehiculoActual = Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL();
+
+            if (correoVehiculo.equals(correoUsuario) && esVehiculoActual) {
+                atributos.add(Objects.requireNonNull(map.get("Placa")).getS()); //0
+                atributos.add(Objects.requireNonNull(map.get("Marca")).getS()); //1
+                atributos.add(Objects.requireNonNull(map.get("Modelo")).getS()); //2
+                atributos.add(Objects.requireNonNull(map.get("AnoFabricacion")).getN()); //3
+                atributos.add(Objects.requireNonNull(map.get("TipoCombustible")).getS()); //4
+                atributos.add(Objects.requireNonNull(map.get("Cilindraje")).getN()); //5
+                atributos.add(Objects.requireNonNull(map.get("TipoCarroceria")).getS()); //6
+                atributos.add(Objects.requireNonNull(map.get("Transmision")).getS()); //7
+                atributos.add(Objects.requireNonNull(map.get("Traccion")).getS()); //8
+                atributos.add(Objects.requireNonNull(map.get("Color")).getS()); //9
+                atributos.add(Objects.requireNonNull(map.get("CorreoUsuario")).getS()); //10
+                atributos.add(String.valueOf(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL())); //11
+                break;
+            }
+        }
+
+        return atributos.toString();
+    }
+
+    /**
+     * Método para obtener todos los vehículos de un usuario como lista de objetos Vehiculo
+     */
+    public List<Vehiculo> obtenerVehiculosUsuarioLista(String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Realizando una petición a la base de datos
+        ScanRequest peticion = new ScanRequest(DYNAMODB_TABLE_VEHICLES);
+        ScanResult respuesta = dbClient_1.scan(peticion);
+        List<Map<String, AttributeValue>> elementos = respuesta.getItems();
+
+        List<Vehiculo> vehiculos = new ArrayList<>();
+        for (Map<String, AttributeValue> map : elementos) {
+            String correoVehiculo = Objects.requireNonNull(map.get("CorreoUsuario")).getS();
+
+            if (correoVehiculo.equals(correoUsuario)) {
+                Vehiculo vehiculo = new Vehiculo();
+                vehiculo.setCorreoUsuario(correoVehiculo);
+                vehiculo.setPlaca(Objects.requireNonNull(map.get("Placa")).getS());
+                vehiculo.setMarca(Objects.requireNonNull(map.get("Marca")).getS());
+                vehiculo.setModelo(Objects.requireNonNull(map.get("Modelo")).getS());
+                vehiculo.setAnoFabricacion(Objects.requireNonNull(map.get("AnoFabricacion")).getN());
+                vehiculo.setTipoCombustible(Objects.requireNonNull(map.get("TipoCombustible")).getS());
+                vehiculo.setCilindraje(Objects.requireNonNull(map.get("Cilindraje")).getN());
+                vehiculo.setTipoCarroceria(Objects.requireNonNull(map.get("TipoCarroceria")).getS());
+                vehiculo.setTransmision(Objects.requireNonNull(map.get("Transmision")).getS());
+                vehiculo.setTraccion(Objects.requireNonNull(map.get("Traccion")).getS());
+                vehiculo.setColor(Objects.requireNonNull(map.get("Color")).getS());
+                vehiculo.setActual(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL());
+                
+                vehiculos.add(vehiculo);
+            }
+        }
+
+        return vehiculos;
+    }
+
+    /**
+     * Método para obtener la placa del vehículo actual del usuario
+     */
+    public String obtenerPlacaVehiculoActual(String correoUsuario) {
+        //Crear un nuevo proveedor de credenciales
+        dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
+        dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
+
+        // Realizando una petición a la base de datos
+        ScanRequest peticion = new ScanRequest(DYNAMODB_TABLE_VEHICLES);
+        ScanResult respuesta = dbClient_1.scan(peticion);
+        List<Map<String, AttributeValue>> elementos = respuesta.getItems();
+
+        for (Map<String, AttributeValue> map : elementos) {
+            String correoVehiculo = Objects.requireNonNull(map.get("CorreoUsuario")).getS();
+            Boolean esVehiculoActual = Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL();
+
+            if (correoVehiculo.equals(correoUsuario) && esVehiculoActual) {
+                return Objects.requireNonNull(map.get("Placa")).getS();
+            }
+        }
+
+        return "SIN_VEHICULO"; // Retorna un valor por defecto si no hay vehículo actual
     }
 }
