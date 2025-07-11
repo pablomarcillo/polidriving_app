@@ -259,7 +259,12 @@ public class VehiculosActivity extends AppCompatActivity {
                             vehiculo.setTipoCarroceria(etTipoCarroceria.getText().toString().trim());
                             vehiculo.setTransmision(etTransmision.getText().toString().trim());
                             vehiculo.setTraccion(etTraccion.getText().toString().trim());
-                            vehiculo.setColor(etColor.getText().toString().trim());
+                            try {
+                                int airbags = Integer.parseInt(etColor.getText().toString().trim());
+                                vehiculo.setNumeroAirbags(airbags);
+                            } catch (NumberFormatException e) {
+                                vehiculo.setNumeroAirbags(0);
+                            }
                             vehiculo.setPlaca(etPlaca.getText().toString().trim().toUpperCase()); // Normalizar a mayúsculas
                             vehiculo.setActual(false); // Por defecto no es el actual
 
@@ -302,7 +307,7 @@ public class VehiculosActivity extends AppCompatActivity {
         etTipoCarroceria.setText(vehiculo.getTipoCarroceria());
         etTransmision.setText(vehiculo.getTransmision());
         etTraccion.setText(vehiculo.getTraccion());
-        etColor.setText(vehiculo.getColor());
+        etColor.setText(String.valueOf(vehiculo.getNumeroAirbags()));
         etPlaca.setText(vehiculo.getPlaca());
 
         // Configurar listas desplegables
@@ -329,7 +334,12 @@ public class VehiculosActivity extends AppCompatActivity {
                             vehiculo.setTipoCarroceria(etTipoCarroceria.getText().toString().trim());
                             vehiculo.setTransmision(etTransmision.getText().toString().trim());
                             vehiculo.setTraccion(etTraccion.getText().toString().trim());
-                            vehiculo.setColor(etColor.getText().toString().trim());
+                            try {
+                                int airbags = Integer.parseInt(etColor.getText().toString().trim());
+                                vehiculo.setNumeroAirbags(airbags);
+                            } catch (NumberFormatException e) {
+                                vehiculo.setNumeroAirbags(0);
+                            }
                             vehiculo.setPlaca(etPlaca.getText().toString().trim().toUpperCase()); // Normalizar a mayúsculas
 
                             actualizarVehiculo(vehiculo);
@@ -460,7 +470,7 @@ public class VehiculosActivity extends AppCompatActivity {
                     vehiculo.getTipoCarroceria(),
                     vehiculo.getTransmision(),
                     vehiculo.getTraccion(),
-                    vehiculo.getColor(),
+                    String.valueOf(vehiculo.getNumeroAirbags()),
                     vehiculo.getCorreoUsuario()
                 );
                 
@@ -498,7 +508,7 @@ public class VehiculosActivity extends AppCompatActivity {
                     vehiculo.getTipoCarroceria(),
                     vehiculo.getTransmision(),
                     vehiculo.getTraccion(),
-                    vehiculo.getColor(),
+                    String.valueOf(vehiculo.getNumeroAirbags()),
                     correoUsuario  // Usar el correo del usuario autenticado, no del vehículo
                 );
                 
@@ -658,11 +668,10 @@ public class VehiculosActivity extends AppCompatActivity {
 
     private void configurarColores(View dialogView) {
         AutoCompleteTextView etColor = dialogView.findViewById(R.id.etColor);
-        String[] colores = {
-            "Blanco", "Negro", "Gris", "Rojo", "Azul", "Plateado", 
-            "Verde", "Amarillo", "Café", "Beige", "Naranja"
+        String[] numeroAirbags = {
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
         };
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, colores);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, numeroAirbags);
         etColor.setAdapter(adapter);
         etColor.setOnClickListener(v -> etColor.showDropDown());
     }

@@ -28,6 +28,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 
+
 // Interfaz para callback del correo de usuario
 interface CorreoUsuarioCallback {
     void onCorreoObtenido(String correo);
@@ -112,8 +113,8 @@ public class Agente extends AsyncTask<String, String, String> {
             //Agregando a la consulta POST los datos de consulta
             parametrosPost.put("Input", "[[" + steering_angle_ + ", " + speed + ", " + rpm_ + ", " + acceleration + ", " + throttle_position + ", " + engine_temperature + ", " + system_voltage + ", " + heart_rate + ", " + distance_travelled + ", " + latitude + ", " + longitude + ", " + current_weather + ", " + accidents_onsite + "]]");
             //Estableciendo las características de consulta POST con timeout configurado desde BuildConfig
-            urlConnection.setReadTimeout(BuildConfig.TIMEOUT_API_PREDICTOR);
-            urlConnection.setConnectTimeout(BuildConfig.TIMEOUT_API_PREDICTOR);
+            urlConnection.setReadTimeout(BuildConfig.TIMEOUT_API_PREDICTOR_MS);
+            urlConnection.setConnectTimeout(BuildConfig.TIMEOUT_API_PREDICTOR_MS);
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
@@ -156,7 +157,7 @@ public class Agente extends AsyncTask<String, String, String> {
     protected void onPostExecute(String s) {
         //Segmento de código que permite obtener la respuesta del servicio REST para que esta sea presentada en las actividades
         super.onPostExecute(s);
-        FragmentoModeloVista cambio = new FragmentoModeloVista();
+        // Removed instance creation as we're using static methods now
         // Se separa los atributos obtenidos mediante un split
         // Extraer el valor del Output desde la estructura JSON anidada
         String[] idDataBase = s.replaceAll(".*\\\"body\\\":\\s*\\\"\\{\\\\\\\"Output\\\\\\\":\\s*", "").trim().replaceAll("\\}\\\".*", "").trim().split(",");
@@ -220,22 +221,92 @@ public class Agente extends AsyncTask<String, String, String> {
                         // Se separa los atributos obtenidos mediante un split
                         Log.i("datosAlarma API: ", datosAlarma);
                         String[] token = datosAlarma.replaceAll("\\[", "").trim().replaceAll("\\]", "").trim().split(",");
-                        // cambio.datosRespuesta(token[0]);
-                        //Mensaje de consola que permite mostrar el resultado del servicio REST
-                        Log.i("RESULTADO API DYNAMODB: ", token[0]);
-                        // resultadoAPI = token[0];
+                        
+                        if (token.length > 0 && !token[0].trim().isEmpty()) {
+                            // Mapear la alarma textual a número para la interfaz gráfica
+                            String alarmaTexto = token[0].trim();
+                            String nivelRiesgo = "1"; // Por defecto nivel bajo
+                            
+                            // Mapear alarmas textuales a niveles numéricos
+                            switch (alarmaTexto.toLowerCase()) {
+                                case "muy alta":
+                                case "muy alto":
+                                case "critica":
+                                case "crítica":
+                                    nivelRiesgo = "4";
+                                    break;
+                                case "alta":
+                                case "alto":
+                                    nivelRiesgo = "3";
+                                    break;
+                                case "media":
+                                case "medio":
+                                case "moderada":
+                                case "moderado":
+                                    nivelRiesgo = "2";
+                                    break;
+                                case "baja":
+                                case "bajo":
+                                case "minima":
+                                case "mínima":
+                                default:
+                                    nivelRiesgo = "1";
+                                    break;
+                            }
+                            
+                            // Crear la respuesta con el formato esperado por la interfaz gráfica
+                            String respuestaAlarma = "{\"Output\": " + nivelRiesgo + "}";
+                            
+                            // Actualizar la interfaz con la alarma obtenida en el hilo principal
+                            android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    FragmentoModeloVista.datosRespuesta(respuestaAlarma);
+                                }
+                            });
+                            
+                            //Mensaje de consola que permite mostrar el resultado del servicio REST
+                            Log.i("RESULTADO API DYNAMODB: ", alarmaTexto);
+                            Log.i("NIVEL_RIESGO_MAPEADO: ", nivelRiesgo);
+                            Log.i("RESPUESTA_ALARMA_ENVIADA: ", respuestaAlarma);
+                        } else {
+                            // Si no hay alarma específica, usar la respuesta original de la API
+                            android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    FragmentoModeloVista.datosRespuesta(s);
+                                }
+                            });
+                            Log.i("USANDO_RESPUESTA_ORIGINAL: ", s);
+                        }
                     } catch (Exception e) {
                         // Mensaje de error al no poder conectarse a la base de datos
                         Log.e("Error de conexión: ", e.getMessage());
+                        // En caso de error, usar la respuesta original de la API
+                        android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                FragmentoModeloVista.datosRespuesta(s);
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     //Mensaje de consola que informa al usuario que n se pudo leer el Dataset
                     Log.e("ERROR DATASET: ", e.toString());
+                    // En caso de error, usar la respuesta original de la API
+                    android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            FragmentoModeloVista.datosRespuesta(s);
+                        }
+                    });
                 }
             }
         }).start();
-        // Envió de la respuesta para presentar al usuario
-        cambio.datosRespuesta(s);
         //Mensaje de consola que permite mostrar el resultado del servicio REST
         Log.i("RESULTADO API: ", s);
         resultadoAPI = s;

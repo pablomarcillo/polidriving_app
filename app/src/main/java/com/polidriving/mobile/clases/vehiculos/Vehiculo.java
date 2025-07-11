@@ -13,7 +13,7 @@ public class Vehiculo {
     private String tipoCarroceria;
     private String transmision;
     private String traccion;
-    private String color;
+    private int numeroAirbags;
     private boolean actual;
 
     // Constructor vacío
@@ -24,7 +24,7 @@ public class Vehiculo {
     public Vehiculo(String correoUsuario, String placa, String marca, String modelo, 
                    String anoFabricacion, String tipoCombustible, String cilindraje,
                    String tipoCarroceria, String transmision, String traccion, 
-                   String color, boolean actual) {
+                   int numeroAirbags, boolean actual) {
         this.correoUsuario = correoUsuario;
         this.placa = placa;
         this.marca = marca;
@@ -35,7 +35,7 @@ public class Vehiculo {
         this.tipoCarroceria = tipoCarroceria;
         this.transmision = transmision;
         this.traccion = traccion;
-        this.color = color;
+        this.numeroAirbags = numeroAirbags;
         this.actual = actual;
     }
 
@@ -120,12 +120,12 @@ public class Vehiculo {
         this.traccion = traccion;
     }
 
-    public String getColor() {
-        return color;
+    public int getNumeroAirbags() {
+        return numeroAirbags;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setNumeroAirbags(int numeroAirbags) {
+        this.numeroAirbags = numeroAirbags;
     }
 
     public boolean isActual() {

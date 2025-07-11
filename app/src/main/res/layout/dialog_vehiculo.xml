@@ -371,7 +371,7 @@
                 style="@style/CustomTextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:startIconDrawable="@drawable/ic_color_palette"
+                app:startIconDrawable="@drawable/ic_info"
                 app:startIconTint="@color/colorPrimary">
 
                 <AutoCompleteTextView
@@ -379,8 +379,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/color_vehiculo"
-                    android:inputType="none"
-                    android:focusable="false"
+                    android:inputType="number"
+                    android:focusable="true"
                     android:clickable="true"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif" />

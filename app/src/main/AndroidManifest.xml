@@ -39,7 +39,8 @@
             android:name=".clases.exit.SalirActivity"
             android:exported="false"
             android:label="@string/salir"
-            android:parentActivityName=".clases.cuenta.AccountActivity">
+            android:parentActivityName=".clases.cuenta.AccountActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.exit.SalirActivity" />
@@ -50,7 +51,8 @@
             android:name=".clases.cuenta.AccountActivity"
             android:exported="false"
             android:label="@string/cuenta"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.cuenta.AccountActivity" />
@@ -61,7 +63,8 @@
             android:name=".clases.privacidad.PrivacyActivity"
             android:exported="false"
             android:label="@string/privacidad"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.privacidad.PrivacyActivity" />
@@ -73,7 +76,8 @@
             android:exported="false"
             android:label="@string/vehiculos"
             android:launchMode="singleTop"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.principal.PrincipalActivity" />
@@ -84,7 +88,8 @@
             android:name=".clases.riesgo.RiesgoActivity"
             android:exported="false"
             android:label="@string/riesgo"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.riesgo.RiesgoActivity" />
@@ -95,7 +100,8 @@
             android:name=".clases.accuweather.AccuWeatherActivity"
             android:exported="false"
             android:label="@string/clima_actual"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.accuweather.AccuWeatherActivity" />
@@ -106,7 +112,8 @@
             android:name=".clases.usuario.UsuarioActivity"
             android:exported="false"
             android:label="@string/perfil_usuario"
-            android:parentActivityName=".clases.cuenta.AccountActivity">
+            android:parentActivityName=".clases.cuenta.AccountActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.usuario.UsuarioActivity" />
@@ -117,7 +124,8 @@
             android:name=".clases.configuracion.ConfiguracionActivity"
             android:exported="false"
             android:label="@string/configuracion_alertas"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.configuracion.ConfiguracionActivity" />
@@ -128,7 +136,8 @@
             android:name=".clases.obd.ObdActivity"
             android:exported="false"
             android:label="@string/informacion_obd"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.obd.ObdActivity" />
@@ -139,7 +148,8 @@
             android:name=".clases.obd.ParametrosActivity"
             android:exported="false"
             android:label="@string/parametros_obd"
-            android:parentActivityName=".clases.obd.ObdActivity">
+            android:parentActivityName=".clases.obd.ObdActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.obd.ParametrosActivity" />
@@ -150,7 +160,8 @@
             android:name=".clases.comentarios.ComentariosActivity"
             android:exported="false"
             android:label="@string/enviar_comentario"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.comentarios.ComentariosActivity" />
@@ -161,7 +172,8 @@
             android:name=".clases.codigo.CodigoActivity"
             android:exported="false"
             android:label="@string/codigo_verificacion"
-            android:parentActivityName=".clases.nuevo.NuevoActivity">
+            android:parentActivityName=".clases.nuevo.NuevoActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.codigo.CodigoActivity" />
@@ -172,7 +184,8 @@
             android:name=".clases.mapas.MapasActivity"
             android:exported="false"
             android:label="@string/informacion_trafico"
-            android:parentActivityName=".clases.principal.PrincipalActivity">
+            android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.mapas.MapasActivity" />
@@ -184,6 +197,7 @@
             android:exported="false"
             android:label="@string/menu_lateral"
             android:parentActivityName=".clases.principal.PrincipalActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.polidriving.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -194,14 +208,16 @@
         <activity
             android:name=".clases.principal.PrincipalActivity"
             android:exported="false"
-            android:label="@string/nombre_principal" />
+            android:label="@string/nombre_principal"
+            android:screenOrientation="portrait" />
 
         <!-- Información base de la clase Recuperar Cuenta y conexión con su clase padre -->
         <activity
             android:name=".clases.recuperar.RecuperarActivity"
             android:exported="false"
             android:label="@string/recuperar_password"
-            android:parentActivityName=".clases.login.LoginActivity">
+            android:parentActivityName=".clases.login.LoginActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.recuperar.RecuperarActivity" />
@@ -212,7 +228,8 @@
             android:name=".clases.nuevo.NuevoActivity"
             android:exported="false"
             android:label="@string/crear_nueva_cuenta"
-            android:parentActivityName=".clases.start.StartActivity">
+            android:parentActivityName=".clases.start.StartActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".clases.nuevo.NuevoActivity" />
@@ -224,6 +241,7 @@
             android:exported="false"
             android:label="@string/iniciar_sesion"
             android:parentActivityName=".clases.start.StartActivity"
+            android:screenOrientation="portrait"
             tools:ignore="RedundantLabel">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -235,6 +253,7 @@
             android:name=".clases.start.StartActivity"
             android:exported="true"
             android:label="@string/nombre_app"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.polidriving.NoActionBar"
             tools:ignore="RedundantLabel">
             <intent-filter>

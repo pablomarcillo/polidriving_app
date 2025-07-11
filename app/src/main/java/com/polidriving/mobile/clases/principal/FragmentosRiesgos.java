@@ -8,13 +8,14 @@ package com.polidriving.mobile.clases.principal;
 //Clases usadas para el uso de fragmentos
 //Clases usadas para el mapeo de cadenas
 //Clases usadas para el uso de voz
+//Clases usadas para configuración centralizada
 import com.polidriving.mobile.clases.accuweather.ParametrosAccuWeather;
 import com.polidriving.mobile.clases.accuweather.ParametrosGeoposition;
 import com.polidriving.mobile.clases.notificaciones.NotificacionesVoz;
 import com.polidriving.mobile.clases.accuweather.GeopositionUtils;
 import com.polidriving.mobile.clases.accuweather.NetworkUtils;
+import com.polidriving.mobile.BuildConfig;
 import android.graphics.drawable.ColorDrawable;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.core.content.ContextCompat;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -51,6 +52,9 @@ import android.os.Bundle;
 import android.Manifest;
 import android.util.Log;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @noinspection ALL
@@ -66,7 +70,7 @@ public class FragmentosRiesgos extends Fragment {
     static TextView precipitacionTitulo;
     //static ImageView resultadoBandera;
     static TextView precipitacionLevel;
-    private FragmentoModeloVista vista;
+    // Removed ViewModel instance as we're using static methods
     boolean locationPermissionGranted;
     LocationListener locationListener;
     static TextView visibilidadTitulo;
@@ -103,6 +107,22 @@ public class FragmentosRiesgos extends Fragment {
     static TextView motor;
     static TextView rpm;
 
+    // Variable para el TextView de última actualización
+    private TextView txtUltimaActualizacionRiesgos;
+    private static final String RIESGOS_PREFS_NAME = "RiesgosPrefs";
+    private static final String RIESGOS_LAST_UPDATE_KEY = "last_riesgos_update";
+    
+    // Claves para SharedPreferences para persistir valores
+    private static final String KEY_PRECIPITACION = "ultimo_valor_precipitacion";
+    private static final String KEY_VISIBILIDAD = "ultimo_valor_visibilidad";
+    private static final String KEY_VELOCIDAD_RIESGO = "ultimo_valor_velocidad_riesgo";
+    private static final String KEY_CARDIACO = "ultimo_valor_cardiaco";
+    private static final String KEY_ONSITE = "ultimo_valor_onsite";
+    private static final String KEY_ONHOUR = "ultimo_valor_onhour";
+    private static final String KEY_MOTOR_RIESGO = "ultimo_valor_motor_riesgo";
+    private static final String KEY_RPM_RIESGO = "ultimo_valor_rpm_riesgo";
+    private static final String KEY_WEATHER_ESTADO = "ultimo_valor_weather_estado";
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // Verificando los permisos para obtener la latitud y longitud del usuario mediante GPS
         locationPermissionGranted = false;
@@ -119,6 +139,9 @@ public class FragmentosRiesgos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Creando un vista de los elementos de la actividad
         View view = inflater.inflate(R.layout.fragmento_principal_riesgos, container, false);
+        
+        //Inicializando el TextView de última actualización
+
         //Inicializando las variables con los elementos de la actividad
         precipitacionLevel = view.findViewById(R.id.txtNivelPrecipitacion);
         //resultadoBandera = view.findViewById(R.id.imagenBanderaDatos);
@@ -156,6 +179,9 @@ public class FragmentosRiesgos extends Fragment {
         //presentarFecha();
         actual.setText("Esperando…");
 
+        // Cargar los últimos valores guardados antes de observar los datos
+        cargarUltimosValoresRiesgos();
+
         //Obteniendo la latitud, longitud del usuario y los permisos para su utilización
         getLocationPermission();
         // Administrador de la ubicación
@@ -189,23 +215,10 @@ public class FragmentosRiesgos extends Fragment {
                 presentarDatos();
                 presentarFecha();
 
-                //Segmento de código que permite actualizar la información a presentar cada 5 segundos
-                handler_datos.postDelayed(this, 5000);
+                //Segmento de código que permite actualizar la información a presentar según VEHICULO_UPDATE_INTERVAL_SECONDS
+                handler_datos.postDelayed(this, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
             }
-        }, 5000);
-
-        //Creación de un tercer hilo que permite presentar las alertas gráficas y sonoras de los datos en tiempo real
-        /*Handler handler_alertas = new Handler();
-        handler_alertas.postDelayed(new Runnable() {
-            public void run() {
-                //Llamando al método que permite presentar las alertas según su nivel: Muy Alto, Alto, Media y Baja
-                presentarAlertas();
-                //Segmento de código que permite actualizar la información a presentar cada 5 segundos
-                handler_alertas.postDelayed(this, 10000);
-            }
-        }, 10000);*/
-
-        //Presentando la información en el fragmento de vista
+        }, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
         return view;
     }
 
@@ -452,14 +465,14 @@ public class FragmentosRiesgos extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Manejando la ubicación de la vista
-        vista = new ViewModelProvider(this).get(FragmentoModeloVista.class);
+        // Removed ViewModel instantiation
         //Variable que permite ubicar la posición del fragmento en la actividad principal
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         //Regresando la ubicación actual a la actividad principal
-        vista.setIndex(index);
+        FragmentoModeloVista.setIndex(index);
         //Instanciando con la clase de notificación por voz
         conversor = new NotificacionesVoz();
         conversor.init(getActivity());
@@ -657,120 +670,95 @@ public class FragmentosRiesgos extends Fragment {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, BuildConfig.INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS, 0, locationListener);
     }
 
-    private void presentarAlertas() {
-        try {
-            //Ocultando parámetro de información no usado
-            //porcentaje.setVisibility(View.INVISIBLE);
-            //resultadoBandera.setVisibility(View.INVISIBLE);
-            //Segmento de código que permite observar en tiempo real los cambios que se dan en la información
-            FragmentoModeloVista.getRespuestaAgente().observe(getViewLifecycleOwner(), new Observer<String>() {
-                public void onChanged(@Nullable String s) {
-                    //Verificando que los parametros recibidos no sean vacíos
-                    assert s != null;
-                    //Verificación o Creación del archivo local de configuraciones de Usuario
-                    SharedPreferences configuracionUsuario = requireActivity().getSharedPreferences("Preferencias", Context.MODE_PRIVATE);
-                    //Obteniendo los datos a presentar
-                    boolean alertaMuyAlta = configuracionUsuario.getBoolean("Alerta Muy Alta", false);
-                    boolean alertaMedia = configuracionUsuario.getBoolean("Alerta Media", false);
-                    boolean alertaAlta = configuracionUsuario.getBoolean("Alerta Alta", false);
-                    boolean alertaBaja = configuracionUsuario.getBoolean("Alerta Baja", false);
-                    //Cambiando la información visual de los elementos
-                    get_set_MuyAlta = alertaMuyAlta;
-                    get_set_Media = alertaMedia;
-                    get_set_Alta = alertaAlta;
-                    get_set_Baja = alertaBaja;
-                    //Comparando el valor recibido con el nivel 4
-                    if (s.equals("{\"Output\": 4}") && get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                        //Iniciando alerta sonora de nivel 4
-                        String mensaje = "Nivel de Riesgo Muy Alta";
-                        conversor.palabra(mensaje);
-                        mostrarRojo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 4}") && !get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                    }
-                    //Comparando el valor recibido con el nivel 3
-                    if (s.equals("{\"Output\": 3}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                        //Iniciando alerta sonora de nivel 3
-                        String mensaje = "Nivel de Riesgo Alta";
-                        conversor.palabra(mensaje);
-                        mostrarNaranja(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 3}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                    }
-                    //Comparando el valor recibido con el nivel 2
-                    if (s.equals("{\"Output\": 2}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                        //Iniciando alerta sonora de nivel 2
-                        String mensaje = "Nivel de Riesgo Media";
-                        conversor.palabra(mensaje);
-                        mostrarAmarillo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 2}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                    }
-                    //Comparando el valor recibido con el nivel 1
-                    if (s.equals("{\"Output\": 1}") && get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
-                        //Iniciando alerta sonora de nivel 1
-                        String mensaje = "Nivel de Riesgo Baja";
-                        conversor.palabra(mensaje);
-                        mostrarVerde(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 1}") && !get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
+    /**
+     * Carga los últimos valores guardados desde SharedPreferences
+     */
+    private void cargarUltimosValoresRiesgos() {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(RIESGOS_PREFS_NAME, Context.MODE_PRIVATE);
+            
+            // Cargar último valor de precipitación (por defecto "0 mm")
+            String ultimaPrecipitacion = prefs.getString(KEY_PRECIPITACION, "0 mm");
+            if (precipitacion != null) precipitacion.setText(ultimaPrecipitacion);
+            
+            // Cargar último valor de visibilidad (por defecto "0 km")
+            String ultimaVisibilidad = prefs.getString(KEY_VISIBILIDAD, "0 km");
+            if (visibilidad != null) visibilidad.setText(ultimaVisibilidad);
+            
+            // Cargar último valor de velocidad (por defecto "0 Km/h")
+            String ultimaVelocidad = prefs.getString(KEY_VELOCIDAD_RIESGO, "0 Km/h");
+            if (velocidad != null) velocidad.setText(ultimaVelocidad);
+            
+            // Cargar último valor de cardiaco (por defecto "0 ppm")
+            String ultimoCardiaco = prefs.getString(KEY_CARDIACO, "0 ppm");
+            if (cardiaco != null) cardiaco.setText(ultimoCardiaco);
+            
+            // Cargar último valor de onsite (por defecto "0")
+            String ultimoOnsite = prefs.getString(KEY_ONSITE, "0");
+            if (onSite != null) onSite.setText(ultimoOnsite);
+            
+            // Cargar último valor de onhour (por defecto "0")
+            String ultimoOnhour = prefs.getString(KEY_ONHOUR, "0");
+            if (onHour != null) onHour.setText(ultimoOnhour);
+            
+            // Cargar último valor de motor (por defecto "0 °C")
+            String ultimoMotor = prefs.getString(KEY_MOTOR_RIESGO, "0 °C");
+            if (motor != null) motor.setText(ultimoMotor);
+            
+            // Cargar último valor de rpm (por defecto "0 rpm")
+            String ultimoRpm = prefs.getString(KEY_RPM_RIESGO, "0 rpm");
+            if (rpm != null) rpm.setText(ultimoRpm);
+            
+            // Cargar último valor de weather estado (por defecto "Sin datos")
+            String ultimoWeatherEstado = prefs.getString(KEY_WEATHER_ESTADO, "Sin datos");
+            if (weather_estado != null) weather_estado.setText(ultimoWeatherEstado);
+        }
+    }
+    
+    /**
+     * Guarda un valor en SharedPreferences
+     */
+    private void guardarValorRiesgos(String clave, String valor) {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(RIESGOS_PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(clave, valor);
+            editor.apply();
+        }
+    }
 
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error Alertas", e.toString());
+    /**
+     * Actualiza la marca de tiempo de la última actualización de riesgos
+     */
+    public void actualizarTimestampRiesgos() {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(RIESGOS_PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(RIESGOS_LAST_UPDATE_KEY, System.currentTimeMillis());
+            editor.apply();
+            
+            mostrarUltimaActualizacionRiesgos();
+        }
+    }
+    
+    /**
+     * Muestra la última actualización en el TextView correspondiente
+     */
+    private void mostrarUltimaActualizacionRiesgos() {
+        if (getActivity() != null && txtUltimaActualizacionRiesgos != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(RIESGOS_PREFS_NAME, Context.MODE_PRIVATE);
+            long lastUpdate = prefs.getLong(RIESGOS_LAST_UPDATE_KEY, 0);
+            
+            if (lastUpdate == 0) {
+                txtUltimaActualizacionRiesgos.setText("Nunca actualizado");
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                String fechaFormateada = sdf.format(new Date(lastUpdate));
+                txtUltimaActualizacionRiesgos.setText("Última actualización: " + fechaFormateada);
+            }
         }
     }
 
@@ -780,11 +768,16 @@ public class FragmentosRiesgos extends Fragment {
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getAccidents_onsite().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    onSiteTitulo.setTextColor(Color.BLACK);
-                    onSiteLevel.setTextColor(Color.BLACK);
-                    onSite.setTextColor(Color.BLACK);
-                    onSite.setText(s);
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        onSiteTitulo.setTextColor(Color.BLACK);
+                        onSiteLevel.setTextColor(Color.BLACK);
+                        onSite.setTextColor(Color.BLACK);
+                        onSite.setText(s);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorRiesgos(KEY_ONSITE, s);
+                        // Actualizar timestamp cuando se reciben datos
+                        actualizarTimestampRiesgos();
                     if (Double.parseDouble(s) == 0) {
                         onSiteTitulo.setTextColor(Color.BLACK);
                         onSiteLevel.setTextColor(Color.BLACK);
@@ -821,17 +814,21 @@ public class FragmentosRiesgos extends Fragment {
                         onSite.setTextColor(Color.RED);
                         onSiteLevel.setText("Muy Alto");
                     }
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getAccidents_onhour().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    onHourTitulo.setTextColor(Color.BLACK);
-                    onHourLevel.setTextColor(Color.BLACK);
-                    onHour.setTextColor(Color.BLACK);
-                    onHour.setText(s);
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        onHourTitulo.setTextColor(Color.BLACK);
+                        onHourLevel.setTextColor(Color.BLACK);
+                        onHour.setTextColor(Color.BLACK);
+                        onHour.setText(s);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorRiesgos(KEY_ONHOUR, s);
                     if (Double.parseDouble(s) == 0) {
                         onHourTitulo.setTextColor(Color.BLACK);
                         onHourLevel.setTextColor(Color.BLACK);
@@ -862,17 +859,22 @@ public class FragmentosRiesgos extends Fragment {
                         onHour.setTextColor(Color.RED);
                         onHourLevel.setText("Alto");
                     }
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getVelocidad().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    velocidadTitulo.setTextColor(Color.BLACK);
-                    velocidadLevel.setTextColor(Color.BLACK);
-                    velocidad.setTextColor(Color.BLACK);
-                    velocidad.setText(s + " Km/h");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        velocidadTitulo.setTextColor(Color.BLACK);
+                        velocidadLevel.setTextColor(Color.BLACK);
+                        velocidad.setTextColor(Color.BLACK);
+                        String textoCompleto = s + " Km/h";
+                        velocidad.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorRiesgos(KEY_VELOCIDAD_RIESGO, textoCompleto);
                     if (Double.parseDouble(s) == 0) {
                         velocidadTitulo.setTextColor(Color.BLACK);
                         velocidadLevel.setTextColor(Color.BLACK);
@@ -909,17 +911,22 @@ public class FragmentosRiesgos extends Fragment {
                         velocidad.setTextColor(Color.RED);
                         velocidadLevel.setText("Muy Serio");
                     }
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getMotor().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    motorTitulo.setTextColor(Color.BLACK);
-                    motorLevel.setTextColor(Color.BLACK);
-                    motor.setTextColor(Color.BLACK);
-                    motor.setText(s + " °C");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        motorTitulo.setTextColor(Color.BLACK);
+                        motorLevel.setTextColor(Color.BLACK);
+                        motor.setTextColor(Color.BLACK);
+                        String textoCompleto = s + " °C";
+                        motor.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorRiesgos(KEY_MOTOR_RIESGO, textoCompleto);
                     if (Double.parseDouble(s) >= 0 && Double.parseDouble(s) <= 82) {
                         motorTitulo.setTextColor(Color.BLACK);
                         motorLevel.setTextColor(Color.BLACK);
@@ -950,6 +957,7 @@ public class FragmentosRiesgos extends Fragment {
                         motor.setTextColor(Color.RED);
                         motorLevel.setText("Overheating");
                     }
+                    }
                 }
             });
 
@@ -957,10 +965,14 @@ public class FragmentosRiesgos extends Fragment {
             FragmentoModeloVista.getHeart().observe(getViewLifecycleOwner(), new Observer<String>() {
                 //Estableciendo el texto de forma visual que se envió del Dataset
                 public void onChanged(@Nullable String s) {
-                    cardiacoTitulo.setTextColor(Color.BLACK);
-                    cardiacoLevel.setTextColor(Color.BLACK);
-                    cardiaco.setTextColor(Color.BLACK);
-                    cardiaco.setText(s + " ppm");
+                    if (s != null && !s.isEmpty()) {
+                        cardiacoTitulo.setTextColor(Color.BLACK);
+                        cardiacoLevel.setTextColor(Color.BLACK);
+                        cardiaco.setTextColor(Color.BLACK);
+                        String textoCompleto = s + " ppm";
+                        cardiaco.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorRiesgos(KEY_CARDIACO, textoCompleto);
 
                     if (Double.parseDouble(s) >= 0 && Double.parseDouble(s) <= 59) {
                         cardiacoTitulo.setTextColor(Color.BLACK);
@@ -998,17 +1010,22 @@ public class FragmentosRiesgos extends Fragment {
                         cardiaco.setTextColor(Color.RED);
                         cardiacoLevel.setText("Taquicardia Severa");
                     }
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getRpm().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    rpmTitulo.setTextColor(Color.BLACK);
-                    rpmLevel.setTextColor(Color.BLACK);
-                    rpm.setTextColor(Color.BLACK);
-                    rpm.setText(s + " rpm");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        rpmTitulo.setTextColor(Color.BLACK);
+                        rpmLevel.setTextColor(Color.BLACK);
+                        rpm.setTextColor(Color.BLACK);
+                        String textoCompleto = s + " rpm";
+                        rpm.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorRiesgos(KEY_RPM_RIESGO, textoCompleto);
                     if (Double.parseDouble(s) >= 0 && Double.parseDouble(s) <= 1500) {
                         rpmTitulo.setTextColor(Color.BLACK);
                         rpmLevel.setTextColor(Color.BLACK);
@@ -1039,11 +1056,13 @@ public class FragmentosRiesgos extends Fragment {
                         rpm.setTextColor(Color.RED);
                         rpmLevel.setText("Muy Alto");
                     }
+                    }
                 }
             });
         } catch (Exception e) {
             //TODO
         }
+
     }
 
     private void presentarFecha() {
@@ -1077,6 +1096,10 @@ public class FragmentosRiesgos extends Fragment {
     public void onStart() {
         //Inicia la interacción con la actividad
         super.onStart();
+        // Cargar y mostrar la última actualización
+        mostrarUltimaActualizacionRiesgos();
+        // Cargar los últimos valores guardados al regresar al fragmento
+        cargarUltimosValoresRiesgos();
     }
 
     public void onPause() {

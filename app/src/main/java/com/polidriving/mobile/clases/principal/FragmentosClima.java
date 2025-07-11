@@ -8,6 +8,8 @@ package com.polidriving.mobile.clases.principal;
 //Clases usadas para el uso de fragmentos
 //Clases usadas para el mapeo de cadenas
 //Clases usadas para el uso de voz
+//Clases usadas para configuración centralizada
+import com.polidriving.mobile.BuildConfig;
 import com.polidriving.mobile.clases.accuweather.ParametrosAccuWeather;
 import com.polidriving.mobile.clases.accuweather.ParametrosGeoposition;
 import com.polidriving.mobile.clases.notificaciones.NotificacionesVoz;
@@ -52,6 +54,9 @@ import android.util.Log;
 import android.Manifest;
 import android.net.Uri;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @noinspection ALL
@@ -90,6 +95,25 @@ public class FragmentosClima extends Fragment {
     static TextView enlace;
     static TextView actual;
     static TextView rayos;
+    
+    // Variable para el TextView de última actualización de clima
+    private TextView txtUltimaActualizacionClima;
+    private static final String CLIMA_PREFS_NAME = "ClimaPrefs";
+    private static final String CLIMA_LAST_UPDATE_KEY = "last_clima_update";
+    
+    // Claves para SharedPreferences para persistir valores de clima
+    private static final String KEY_TEMPERATURA_ACTUAL = "ultimo_valor_temperatura_actual";
+    private static final String KEY_WEATHER_ESTADO_CLIMA = "ultimo_valor_weather_estado_clima";
+    private static final String KEY_OBSTRUCCION = "ultimo_valor_obstruccion";
+    private static final String KEY_VISIBILIDAD_CLIMA = "ultimo_valor_visibilidad_clima";
+    private static final String KEY_PRESION = "ultimo_valor_presion";
+    private static final String KEY_HUMEDAD = "ultimo_valor_humedad";
+    private static final String KEY_VIENTO = "ultimo_valor_viento";
+    private static final String KEY_LLUVIA = "ultimo_valor_lluvia";
+    private static final String KEY_RAYOS = "ultimo_valor_rayos";
+    
+    // Variable estática para acceder a la instancia del fragmento
+    private static FragmentosClima instanciaFragmento;
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // Verificando los permisos para obtener la latitud y longitud del usuario mediante GPS
@@ -107,6 +131,13 @@ public class FragmentosClima extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Creando un vista de los elementos de la actividad
         View view = inflater.inflate(R.layout.fragmento_principal_clima, container, false);
+        
+        // Asignar la instancia actual
+        instanciaFragmento = this;
+        
+        //Inicializando el TextView de última actualización
+        txtUltimaActualizacionClima = view.findViewById(R.id.txtUltimaActualizacionClima);
+        
         //Inicializando las variables con los elementos de la actividad
         //temperatura_real_feel_shade = view.findViewById(R.id.txtRespuestaGradosTemperaturaMedio);
         //temperatura_real_feel = view.findViewById(R.id.txtRespuestaGradosTemperaturaBajo);
@@ -128,8 +159,11 @@ public class FragmentosClima extends Fragment {
         rayos = view.findViewById(R.id.txtRespuestaIndiceUV);
 
         //Estableciendo la fecha para mostrar al usuario
-        //presentarFecha();
+        presentarFecha();
         actual.setText("Esperando…");
+
+        // Cargar los últimos valores guardados antes de observar los datos
+        cargarUltimosValoresClima();
 
         //Obteniendo la latitud, longitud del usuario y los permisos para su utilización
         getLocationPermission();
@@ -148,6 +182,9 @@ public class FragmentosClima extends Fragment {
                 new FetchGeopositioDetails().execute(geoURL);
                 // Mostrando la información del usuario de AccuWeather
                 Log.i("Conexión Geo AccuWeather", "onCreate: geoURL: " + geoURL);
+                
+                // Actualizar la fecha de presentación cuando se obtiene nueva ubicación
+                presentarFecha();
             }
         };
         if (locationPermissionGranted) {
@@ -170,24 +207,12 @@ public class FragmentosClima extends Fragment {
             public void run() {
                 //Llamando al método que permite presentar la ubicación gps
                 startLocationUpdates();
-                //presentarFecha();
+                presentarFecha();
                 //Segmento de código que permite actualizar la información a presentar cada 60 segundos
                 handler_gps.postDelayed(this, 60000);
             }
         }, 5000);
 
-        //Creación de un tercer hilo que permite presentar las alertas gráficas y sonoras de los datos en tiempo real
-        /*Handler handler_alertas = new Handler();
-        handler_alertas.postDelayed(new Runnable() {
-            public void run() {
-                //Llamando al método que permite presentar las alertas según su nivel: Muy Alto, Alto, Media y Baja
-                presentarAlertas();
-                //Segmento de código que permite actualizar la información a presentar cada 5 segundos
-                handler_alertas.postDelayed(this, 10000);
-            }
-        }, 10000);*/
-
-        //Presentando la información en el fragmento de vista
         return view;
     }
 
@@ -212,7 +237,13 @@ public class FragmentosClima extends Fragment {
                     double valueTemperature = metricTemperature.getDouble("Value");
                     String unitTemperature = metricTemperature.getString("Unit");
                     datosClima.setTemperatura(valueTemperature + " " + "°" + unitTemperature);
-                    temperatura_actual.setText(String.format("%s °%s", valueTemperature, unitTemperature));
+                    String textoTemperatura = String.format("%s °%s", valueTemperature, unitTemperature);
+                    temperatura_actual.setText(textoTemperatura);
+                    // Guardar valor y actualizar timestamp
+                    if (instanciaFragmento != null) {
+                        instanciaFragmento.guardarValorClima(KEY_TEMPERATURA_ACTUAL, textoTemperatura);
+                        instanciaFragmento.actualizarTimestampClima();
+                    }
                     Log.i("Temperature", "Valor: " + valueTemperature + " " + "°" + unitTemperature);
                 } catch (Exception e) {
                     temperatura_actual.setText("No Data");
@@ -252,6 +283,10 @@ public class FragmentosClima extends Fragment {
                     String weatherText = jsonObject.getString("WeatherText");
                     datosClima.setEstado(weatherText);
                     weather_estado.setText(weatherText);
+                    // Guardar valor
+                    if (instanciaFragmento != null) {
+                        instanciaFragmento.guardarValorClima(KEY_WEATHER_ESTADO_CLIMA, weatherText);
+                    }
                     Log.i("WeatherText", "Valor: " + weatherText);
                 } catch (Exception e) {
                     weather_estado.setText("No Data");
@@ -266,7 +301,12 @@ public class FragmentosClima extends Fragment {
                     int value = metric.getInt("Value");
                     String unit = metric.getString("Unit");
                     datosClima.setLluvia(value + " " + unit + "³");
-                    lluvia.setText(value + " " + unit + "³");
+                    String textoLluvia = value + " " + unit + "³";
+                    lluvia.setText(textoLluvia);
+                    // Guardar valor
+                    if (instanciaFragmento != null) {
+                        instanciaFragmento.guardarValorClima(KEY_LLUVIA, textoLluvia);
+                    }
                     Log.i("Precipitation", "Valor: " + value + " " + unit + "³");
                 } catch (Exception e) {
                     lluvia.setText("No Data");
@@ -277,7 +317,12 @@ public class FragmentosClima extends Fragment {
                     // Obteniendo el valor de RelativeHumidity
                     int relativeHumidity = jsonObject.getInt("RelativeHumidity");
                     datosClima.setHumedad(String.valueOf(relativeHumidity));
-                    humedad.setText(String.valueOf(relativeHumidity + "%"));
+                    String textoHumedad = String.valueOf(relativeHumidity + "%");
+                    humedad.setText(textoHumedad);
+                    // Guardar valor
+                    if (instanciaFragmento != null) {
+                        instanciaFragmento.guardarValorClima(KEY_HUMEDAD, textoHumedad);
+                    }
                     Log.i("RelativeHumidity", "Valor: " + relativeHumidity);
                 } catch (Exception e) {
                     humedad.setText("No Data");
@@ -295,7 +340,12 @@ public class FragmentosClima extends Fragment {
                     double valueWind = metricWind.getDouble("Value");
                     String unitWind = metricWind.getString("Unit");
                     datosClima.setViento(valueWind + " " + unitWind + " " + grados + "°" + " " + orientacion);
-                    viento.setText(String.format("%s %s %s° %s", valueWind, unitWind, grados, orientacion));
+                    String textoViento = String.format("%s %s %s° %s", valueWind, unitWind, grados, orientacion);
+                    viento.setText(textoViento);
+                    // Guardar valor
+                    if (instanciaFragmento != null) {
+                        instanciaFragmento.guardarValorClima(KEY_VIENTO, textoViento);
+                    }
                     Log.i("Wind", "Valor: " + valueWind + " " + unitWind + " " + grados + "°" + " " + orientacion);
                 } catch (Exception e) {
                     viento.setText("No Data");
@@ -306,20 +356,26 @@ public class FragmentosClima extends Fragment {
                     // Obteniendo el valor de UVIndex
                     int uvIndex = jsonObject.getInt("UVIndex");
                     datosClima.setRayosUV(String.valueOf(uvIndex));
+                    String textoRayos = "";
                     if (uvIndex >= 0 && uvIndex <= 2) {
-                        rayos.setText(String.valueOf(uvIndex + " " + "Bajo"));
+                        textoRayos = String.valueOf(uvIndex + " " + "Bajo");
                     }
                     if (uvIndex >= 3 && uvIndex <= 5) {
-                        rayos.setText(String.valueOf(uvIndex + " " + "Moderado"));
+                        textoRayos = String.valueOf(uvIndex + " " + "Moderado");
                     }
                     if (uvIndex >= 6 && uvIndex <= 7) {
-                        rayos.setText(String.valueOf(uvIndex + " " + "Alto"));
+                        textoRayos = String.valueOf(uvIndex + " " + "Alto");
                     }
                     if (uvIndex >= 8 && uvIndex <= 10) {
-                        rayos.setText(String.valueOf(uvIndex + " " + "Muy Alto"));
+                        textoRayos = String.valueOf(uvIndex + " " + "Muy Alto");
                     }
                     if (uvIndex >= 11) {
-                        rayos.setText(String.valueOf(uvIndex + " " + "Extremadamente Alto"));
+                        textoRayos = String.valueOf(uvIndex + " " + "Extremadamente Alto");
+                    }
+                    rayos.setText(textoRayos);
+                    // Guardar valor
+                    if (instanciaFragmento != null) {
+                        instanciaFragmento.guardarValorClima(KEY_RAYOS, textoRayos);
                     }
                     Log.i("UVIndex", "Valor: " + uvIndex);
                 } catch (Exception e) {
@@ -385,6 +441,12 @@ public class FragmentosClima extends Fragment {
                 }
 
                 Log.i("Condiciones", String.valueOf(jsonObject));
+                
+                // Actualizar el timestamp de la última actualización de clima
+                if (instanciaFragmento != null) {
+                    instanciaFragmento.actualizarTimestampClima();
+                }
+                
                 return detallesCurrentCondintions;
             } catch (Exception e) {
                 Log.e("Error Extracción Condiciones", "resultadoCondiciones: " + e);
@@ -697,140 +759,26 @@ public class FragmentosClima extends Fragment {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, BuildConfig.INTERVALO_ENTRE_PETICIONES_ACCUWEATHER_API_MS, 0, locationListener);
     }
 
-    private void presentarAlertas() {
-        try {
-            //Ocultando parámetro de información no usado
-            //porcentaje.setVisibility(View.INVISIBLE);
-            //resultadoBandera.setVisibility(View.INVISIBLE);
-            //Segmento de código que permite observar en tiempo real los cambios que se dan en la información
-            FragmentoModeloVista.getRespuestaAgente().observe(getViewLifecycleOwner(), new Observer<String>() {
-                public void onChanged(@Nullable String s) {
-                    //Verificando que los parametros recibidos no sean vacíos
-                    assert s != null;
-                    //Verificación o Creación del archivo local de configuraciones de Usuario
-                    SharedPreferences configuracionUsuario = requireActivity().getSharedPreferences("Preferencias", Context.MODE_PRIVATE);
-                    //Obteniendo los datos a presentar
-                    boolean alertaMuyAlta = configuracionUsuario.getBoolean("Alerta Muy Alta", false);
-                    boolean alertaMedia = configuracionUsuario.getBoolean("Alerta Media", false);
-                    boolean alertaAlta = configuracionUsuario.getBoolean("Alerta Alta", false);
-                    boolean alertaBaja = configuracionUsuario.getBoolean("Alerta Baja", false);
-                    //Cambiando la información visual de los elementos
-                    get_set_MuyAlta = alertaMuyAlta;
-                    get_set_Media = alertaMedia;
-                    get_set_Alta = alertaAlta;
-                    get_set_Baja = alertaBaja;
-                    //Comparando el valor recibido con el nivel 4
-                    if (s.equals("{\"Output\": 4}") && get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                        //Iniciando alerta sonora de nivel 4
-                        String mensaje = "Nivel de Riesgo Muy Alta";
-                        conversor.palabra(mensaje);
-                        mostrarRojo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 4}") && !get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                    }
-                    //Comparando el valor recibido con el nivel 3
-                    if (s.equals("{\"Output\": 3}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                        //Iniciando alerta sonora de nivel 3
-                        String mensaje = "Nivel de Riesgo Alta";
-                        conversor.palabra(mensaje);
-                        mostrarNaranja(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 3}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                    }
-                    //Comparando el valor recibido con el nivel 2
-                    if (s.equals("{\"Output\": 2}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                        //Iniciando alerta sonora de nivel 2
-                        String mensaje = "Nivel de Riesgo Media";
-                        conversor.palabra(mensaje);
-                        mostrarAmarillo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 2}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                    }
-                    //Comparando el valor recibido con el nivel 1
-                    if (s.equals("{\"Output\": 1}") && get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
-                        //Iniciando alerta sonora de nivel 1
-                        String mensaje = "Nivel de Riesgo Baja";
-                        conversor.palabra(mensaje);
-                        mostrarVerde(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 1}") && !get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error Alertas", e.toString());
-        }
-    }
-
+    
     private void presentarFecha() {
-        //Estableciendo la fecha para mostrar al usuario
-        Calendar fecha = Calendar.getInstance();
-        int day = fecha.get(Calendar.DAY_OF_MONTH);
-        // Se suma 1 porque Calendar.MONTH devuelve un valor basado en cero
-        int month = fecha.get(Calendar.MONTH) + 1;
-        int year = fecha.get(Calendar.YEAR);
-        int hour = fecha.get(Calendar.HOUR_OF_DAY);
-        int minute = fecha.get(Calendar.MINUTE);
-        int seconds = fecha.get(Calendar.SECOND);
-        String amPm = (fecha.get(Calendar.AM_PM) == Calendar.AM) ? "AM" : "PM";
-        actual.setText(String.format("%02d", day) + "/" + String.format("%02d", month) + "/" + String.format("%02d", year) + "  " + String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", seconds) + " " + amPm);
+        //Estableciendo la fecha para mostrar al usuario usando la fecha del sistema
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+        String fechaActual = formatoFecha.format(new Date());
+        actual.setText(fechaActual);
     }
 
     public void onDestroy() {
         //Finaliza la interacción con la actividad
         super.onDestroy();
         conversor.apagar();
+        
+        // Limpiar la referencia estática para evitar memory leaks
+        if (instanciaFragmento == this) {
+            instanciaFragmento = null;
+        }
     }
 
     public void onResume() {
@@ -844,8 +792,12 @@ public class FragmentosClima extends Fragment {
     public void onStart() {
         //Inicia la interacción con la actividad
         super.onStart();
+        // Cargar y mostrar la última actualización
+        mostrarUltimaActualizacionClima();
+        // Cargar los últimos valores guardados al regresar al fragmento
+        cargarUltimosValoresClima();
     }
-
+    
     public void onPause() {
         //Suspende la interacción con la actividad
         super.onPause();
@@ -855,5 +807,102 @@ public class FragmentosClima extends Fragment {
     public void onStop() {
         //Para la interacción con la actividad
         super.onStop();
+    }
+    /**
+     * Actualiza la marca de tiempo de la última actualización del clima
+     */
+    public void actualizarTimestampClima() {
+        if (getActivity() != null) {
+            // Obtener el timestamp actual del sistema
+            long timestampActual = System.currentTimeMillis();
+            
+            SharedPreferences prefs = getActivity().getSharedPreferences(CLIMA_PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(CLIMA_LAST_UPDATE_KEY, timestampActual);
+            editor.apply();
+            
+            // Actualizar inmediatamente la visualización
+            mostrarUltimaActualizacionClima();
+            
+            Log.i("ClimaTimestamp", "Timestamp actualizado: " + timestampActual);
+        }
+    }
+    
+    /**
+     * Carga los últimos valores guardados desde SharedPreferences
+     */
+    private void cargarUltimosValoresClima() {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(CLIMA_PREFS_NAME, Context.MODE_PRIVATE);
+            
+            // Cargar último valor de temperatura actual (por defecto "0 °C")
+            String ultimaTemperatura = prefs.getString(KEY_TEMPERATURA_ACTUAL, "0 °C");
+            if (temperatura_actual != null) temperatura_actual.setText(ultimaTemperatura);
+            
+            // Cargar último valor de weather estado (por defecto "Sin datos")
+            String ultimoWeatherEstado = prefs.getString(KEY_WEATHER_ESTADO_CLIMA, "Sin datos");
+            if (weather_estado != null) weather_estado.setText(ultimoWeatherEstado);
+            
+            // Cargar último valor de obstrucción (por defecto "Sin datos")
+            String ultimaObstruccion = prefs.getString(KEY_OBSTRUCCION, "Sin datos");
+            if (obstruccion != null) obstruccion.setText(ultimaObstruccion);
+            
+            // Cargar último valor de visibilidad (por defecto "0 km")
+            String ultimaVisibilidad = prefs.getString(KEY_VISIBILIDAD_CLIMA, "0 km");
+            if (visibilidad != null) visibilidad.setText(ultimaVisibilidad);
+            
+            // Cargar último valor de presión (por defecto "0 mb")
+            String ultimaPresion = prefs.getString(KEY_PRESION, "0 mb");
+            if (presion != null) presion.setText(ultimaPresion);
+            
+            // Cargar último valor de humedad (por defecto "0%")
+            String ultimaHumedad = prefs.getString(KEY_HUMEDAD, "0%");
+            if (humedad != null) humedad.setText(ultimaHumedad);
+            
+            // Cargar último valor de viento (por defecto "0 km/h")
+            String ultimoViento = prefs.getString(KEY_VIENTO, "0 km/h");
+            if (viento != null) viento.setText(ultimoViento);
+            
+            // Cargar último valor de lluvia (por defecto "0 mm³")
+            String ultimaLluvia = prefs.getString(KEY_LLUVIA, "0 mm³");
+            if (lluvia != null) lluvia.setText(ultimaLluvia);
+            
+            // Cargar último valor de rayos UV (por defecto "0 Bajo")
+            String ultimosRayos = prefs.getString(KEY_RAYOS, "0 Bajo");
+            if (rayos != null) rayos.setText(ultimosRayos);
+        }
+    }
+    
+    /**
+     * Guarda un valor en SharedPreferences
+     */
+    private void guardarValorClima(String clave, String valor) {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(CLIMA_PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(clave, valor);
+            editor.apply();
+        }
+    }
+    
+    /**
+     * Muestra la última actualización del clima en el TextView correspondiente
+     */
+    private void mostrarUltimaActualizacionClima() {
+        if (getActivity() != null && txtUltimaActualizacionClima != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(CLIMA_PREFS_NAME, Context.MODE_PRIVATE);
+            long lastUpdate = prefs.getLong(CLIMA_LAST_UPDATE_KEY, 0);
+            
+            if (lastUpdate == 0) {
+                txtUltimaActualizacionClima.setText("Sin datos de clima");
+            } else {
+                // Usar el mismo formato que el resto de la aplicación
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                String fechaFormateada = sdf.format(new Date(lastUpdate));
+                txtUltimaActualizacionClima.setText("Última actualización: " + fechaFormateada);
+                
+                Log.i("ClimaDisplay", "Mostrando última actualización: " + fechaFormateada);
+            }
+        }
     }
 }

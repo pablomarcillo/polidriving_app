@@ -9,8 +9,8 @@ package com.polidriving.mobile.clases.principal;
 //Clases usadas para el mapeo de cadenas
 //Clases usadas para el uso de voz
 import com.polidriving.mobile.clases.notificaciones.NotificacionesVoz;
+import com.polidriving.mobile.BuildConfig;
 import android.graphics.drawable.ColorDrawable;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.core.content.ContextCompat;
 import android.location.LocationListener;
 import android.content.SharedPreferences;
@@ -40,18 +40,18 @@ import android.view.View;
 import android.os.Bundle;
 import android.util.Log;
 import android.Manifest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @noinspection ALL
  */
 @SuppressLint({"StaticFieldLeak", "SetTextI18n", "DefaultLocale"})
 public class FragmentosAccidentes extends Fragment {
-    //Creación de variables a usar e instancia a la clase de notificaciones de voz TTS
     private static final String ARG_SECTION_NUMBER = "section_number";
     static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private NotificacionesVoz conversor = null;
-    //static ImageView resultadoBandera;
-    private FragmentoModeloVista vista;
     boolean locationPermissionGranted;
     LocationListener locationListener;
     LocationManager locationManager;
@@ -73,6 +73,19 @@ public class FragmentosAccidentes extends Fragment {
     static TextView via;
     static TextView longitudReal;
     static TextView latitudReal;
+    private TextView txtUltimaActualizacionAccidentes;
+    private static final String ACCIDENTES_PREFS_NAME = "AccidentesPrefs";
+    private static final String ACCIDENTES_LAST_UPDATE_KEY = "last_accidentes_update";
+    private static final String KEY_VELOCIDAD_ACC = "ultimo_valor_velocidad_acc";
+    private static final String KEY_SEGMENTO = "ultimo_valor_segmento";
+    private static final String KEY_LONGITUD = "ultimo_valor_longitud";
+    private static final String KEY_LATITUD = "ultimo_valor_latitud";
+    private static final String KEY_CONTROL = "ultimo_valor_control";
+    private static final String KEY_ONSITE_ACC = "ultimo_valor_onsite_acc";
+    private static final String KEY_ONHOUR_ACC = "ultimo_valor_onhour_acc";
+    private static final String KEY_VIA = "ultimo_valor_via";
+    private static final String KEY_LONGITUD_REAL = "ultimo_valor_longitud_real";
+    private static final String KEY_LATITUD_REAL = "ultimo_valor_latitud_real";
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // Verificando los permisos para obtener la latitud y longitud del usuario mediante GPS
@@ -90,6 +103,10 @@ public class FragmentosAccidentes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Creando un vista de los elementos de la actividad
         View view = inflater.inflate(R.layout.fragmento_principal_accidentes, container, false);
+        
+        //Inicializando el TextView de última actualización
+        txtUltimaActualizacionAccidentes = view.findViewById(R.id.txtUltimaActualizacionAccidentes);
+        
         //Inicializando las variables con los elementos de la actividad
         //resultadoBandera = view.findViewById(R.id.imagenBanderaDatosAccidentes);
         //porcentaje = view.findViewById(R.id.txtPorcentajeDatosAccidentes);
@@ -106,14 +123,15 @@ public class FragmentosAccidentes extends Fragment {
         segmento = view.findViewById(R.id.txtRespuestaSegmento);
         via = view.findViewById(R.id.txtRespuestaIdVia);
 
-
         longitudReal = view.findViewById(R.id.txtRespuestaLongitudAccidenteReal);
         latitudReal = view.findViewById(R.id.txtRespuestaLatitudAccidenteReal);
-
 
         //Estableciendo la fecha para mostrar al usuario
         //presentarFecha();
         actual.setText("Esperando…");
+
+        // Cargar los últimos valores guardados antes de observar los datos
+        cargarUltimosValoresAccidentes();
 
         //Obteniendo la latitud, longitud del usuario y los permisos para su utilización
         getLocationPermission();
@@ -146,21 +164,20 @@ public class FragmentosAccidentes extends Fragment {
                 startLocationUpdates();
                 presentarDatos();
                 //presentarFecha();
-                //Segmento de código que permite actualizar la información a presentar cada 5 segundos
-                handler_datos.postDelayed(this, 5000);
+                //Segmento de código que permite actualizar la información a presentar según ACCIDENTES_UPDATE_INTERVAL_MS
+                handler_datos.postDelayed(this, BuildConfig.ACCIDENTES_UPDATE_INTERVAL_MS);
             }
-        }, 5000);
+        }, BuildConfig.ACCIDENTES_UPDATE_INTERVAL_MS);
 
         //Creación de un tercer hilo que permite presentar las alertas gráficas y sonoras de los datos en tiempo real
         /*Handler handler_alertas = new Handler();
         handler_alertas.postDelayed(new Runnable() {
             public void run() {
                 //Llamando al método que permite presentar las alertas según su nivel: Muy Alto, Alto, Media y Baja
-                presentarAlertas();
                 //Segmento de código que permite actualizar la información a presentar cada 5 segundos
-                handler_alertas.postDelayed(this, 10000);
+                handler_alertas.postDelayed(this, BuildConfig.ACCIDENTES_UPDATE_INTERVAL_SECONDS);
             }
-        }, 10000);*/
+        }, BuildConfig.ACCIDENTES_UPDATE_INTERVAL_SECONDS);*/
 
         //Presentando la información en el fragmento de vista
         return view;
@@ -171,14 +188,14 @@ public class FragmentosAccidentes extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Manejando la ubicación de la vista
-        vista = new ViewModelProvider(this).get(FragmentoModeloVista.class);
+        // Removed ViewModel instantiation
         //Variable que permite ubicar la posición del fragmento en la actividad principal
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         //Regresando la ubicación actual a la actividad principal
-        vista.setIndex(index);
+        FragmentoModeloVista.setIndex(index);
         //Instanciando con la clase de notificación por voz
         conversor = new NotificacionesVoz();
         conversor.init(getActivity());
@@ -376,146 +393,144 @@ public class FragmentosAccidentes extends Fragment {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, BuildConfig.INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS, 0, locationListener);
     }
 
-    private void presentarAlertas() {
-        try {
-            //Ocultando parámetro de información no usado
-            //porcentaje.setVisibility(View.INVISIBLE);
-            //resultadoBandera.setVisibility(View.INVISIBLE);
-            //Segmento de código que permite observar en tiempo real los cambios que se dan en la información
-            FragmentoModeloVista.getRespuestaAgente().observe(getViewLifecycleOwner(), new Observer<String>() {
-                public void onChanged(@Nullable String s) {
-                    //Verificando que los parametros recibidos no sean vacíos
-                    assert s != null;
-                    //Verificación o Creación del archivo local de configuraciones de Usuario
-                    SharedPreferences configuracionUsuario = requireActivity().getSharedPreferences("Preferencias", Context.MODE_PRIVATE);
-                    //Obteniendo los datos a presentar
-                    boolean alertaMuyAlta = configuracionUsuario.getBoolean("Alerta Muy Alta", false);
-                    boolean alertaMedia = configuracionUsuario.getBoolean("Alerta Media", false);
-                    boolean alertaAlta = configuracionUsuario.getBoolean("Alerta Alta", false);
-                    boolean alertaBaja = configuracionUsuario.getBoolean("Alerta Baja", false);
-                    //Cambiando la información visual de los elementos
-                    get_set_MuyAlta = alertaMuyAlta;
-                    get_set_Media = alertaMedia;
-                    get_set_Alta = alertaAlta;
-                    get_set_Baja = alertaBaja;
-                    //Comparando el valor recibido con el nivel 4
-                    if (s.equals("{\"Output\": 4}") && get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                        //Iniciando alerta sonora de nivel 4
-                        String mensaje = "Nivel de Riesgo Muy Alta";
-                        conversor.palabra(mensaje);
-                        mostrarRojo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 4}") && !get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                    }
-                    //Comparando el valor recibido con el nivel 3
-                    if (s.equals("{\"Output\": 3}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                        //Iniciando alerta sonora de nivel 3
-                        String mensaje = "Nivel de Riesgo Alta";
-                        conversor.palabra(mensaje);
-                        mostrarNaranja(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 3}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                    }
-                    //Comparando el valor recibido con el nivel 2
-                    if (s.equals("{\"Output\": 2}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                        //Iniciando alerta sonora de nivel 2
-                        String mensaje = "Nivel de Riesgo Media";
-                        conversor.palabra(mensaje);
-                        mostrarAmarillo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 2}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                    }
-                    //Comparando el valor recibido con el nivel 1
-                    if (s.equals("{\"Output\": 1}") && get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
-                        //Iniciando alerta sonora de nivel 1
-                        String mensaje = "Nivel de Riesgo Baja";
-                        conversor.palabra(mensaje);
-                        mostrarVerde(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 1}") && !get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error Alertas", e.toString());
+    /**
+     * Carga los últimos valores guardados desde SharedPreferences
+     */
+    private void cargarUltimosValoresAccidentes() {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(ACCIDENTES_PREFS_NAME, Context.MODE_PRIVATE);
+            
+            // Cargar último valor de velocidad (por defecto "0 Km/h")
+            String ultimaVelocidad = prefs.getString(KEY_VELOCIDAD_ACC, "0 Km/h");
+            if (velocidad != null) velocidad.setText(ultimaVelocidad);
+            
+            // Cargar último valor de segmento (por defecto "0")
+            String ultimoSegmento = prefs.getString(KEY_SEGMENTO, "0");
+            if (segmento != null) segmento.setText(ultimoSegmento);
+            
+            // Cargar último valor de longitud (por defecto "0.0")
+            String ultimaLongitud = prefs.getString(KEY_LONGITUD, "0.0");
+            if (longitud != null) longitud.setText(ultimaLongitud);
+            
+            // Cargar último valor de latitud (por defecto "0.0")
+            String ultimaLatitud = prefs.getString(KEY_LATITUD, "0.0");
+            if (latitud != null) latitud.setText(ultimaLatitud);
+            
+            // Cargar último valor de control (por defecto "0")
+            String ultimoControl = prefs.getString(KEY_CONTROL, "0");
+            if (control != null) control.setText(ultimoControl);
+            
+            // Cargar último valor de onsite (por defecto "0")
+            String ultimoOnsite = prefs.getString(KEY_ONSITE_ACC, "0");
+            if (onSite != null) onSite.setText(ultimoOnsite);
+            
+            // Cargar último valor de onhour (por defecto "0")
+            String ultimoOnhour = prefs.getString(KEY_ONHOUR_ACC, "0");
+            if (onHour != null) onHour.setText(ultimoOnhour);
+            
+            // Cargar último valor de via (por defecto "0")
+            String ultimaVia = prefs.getString(KEY_VIA, "0");
+            if (via != null) via.setText(ultimaVia);
+            
+            // Cargar último valor de longitud real (por defecto "0.0")
+            String ultimaLongitudReal = prefs.getString(KEY_LONGITUD_REAL, "0.0");
+            if (longitudReal != null) longitudReal.setText(ultimaLongitudReal);
+            
+            // Cargar último valor de latitud real (por defecto "0.0")
+            String ultimaLatitudReal = prefs.getString(KEY_LATITUD_REAL, "0.0");
+            if (latitudReal != null) latitudReal.setText(ultimaLatitudReal);
+        }
+    }
+    
+    /**
+     * Guarda un valor en SharedPreferences
+     */
+    private void guardarValorAccidentes(String clave, String valor) {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(ACCIDENTES_PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(clave, valor);
+            editor.apply();
+        }
+    }
+
+    /**
+     * Actualiza la marca de tiempo de la última actualización de accidentes
+     */
+    public void actualizarTimestampAccidentes() {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(ACCIDENTES_PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(ACCIDENTES_LAST_UPDATE_KEY, System.currentTimeMillis());
+            editor.apply();
+            
+            mostrarUltimaActualizacionAccidentes();
+        }
+    }
+    
+    /**
+     * Muestra la última actualización en el TextView correspondiente
+     */
+    private void mostrarUltimaActualizacionAccidentes() {
+        if (getActivity() != null && txtUltimaActualizacionAccidentes != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(ACCIDENTES_PREFS_NAME, Context.MODE_PRIVATE);
+            long lastUpdate = prefs.getLong(ACCIDENTES_LAST_UPDATE_KEY, 0);
+            
+            if (lastUpdate == 0) {
+                txtUltimaActualizacionAccidentes.setText("Nunca actualizado");
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                String fechaFormateada = sdf.format(new Date(lastUpdate));
+                txtUltimaActualizacionAccidentes.setText("Última actualización: " + fechaFormateada);
+            }
         }
     }
 
     private void presentarDatos() {
         //Segmento de código que obtiene desde el agente y la actividad principal los datos a presentar en pantalla
         try {
+            // Variable para controlar si se han actualizado los datos
+            boolean datosActualizados = false;
+            
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getAccidents_onsite().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    onSite.setText(s);
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        onSite.setText(s);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_ONSITE_ACC, s);
+                        // Actualizar timestamp cuando se reciben datos
+                        actualizarTimestampAccidentes();
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getAccidents_onhour().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    onHour.setText(s);
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        onHour.setText(s);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_ONHOUR_ACC, s);
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getVelocidad().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    velocidad.setText(s + " Km/h");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + " Km/h";
+                        velocidad.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_VELOCIDAD_ACC, textoCompleto);
+                    }
                 }
             });
 
@@ -523,39 +538,61 @@ public class FragmentosAccidentes extends Fragment {
             FragmentoModeloVista.getSegmento().observe(getViewLifecycleOwner(), new Observer<String>() {
                 //Estableciendo el texto de forma visual que se envió del Dataset
                 public void onChanged(@Nullable String s) {
-                    segmento.setText(s);
+                    if (s != null && !s.isEmpty()) {
+                        segmento.setText(s);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_SEGMENTO, s);
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getLongitud().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    longitud.setText(s + "°");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + "°";
+                        longitud.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_LONGITUD, textoCompleto);
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getControl().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    control.setText(s);
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        control.setText(s);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_CONTROL, s);
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getLatitud().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    latitud.setText(s + "°");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + "°";
+                        latitud.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_LATITUD, textoCompleto);
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getVia().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    via.setText(s);
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        via.setText(s);
+                        // Guardar el valor en SharedPreferences
+                        guardarValorAccidentes(KEY_VIA, s);
+                    }
                 }
             });
         } catch (Exception e) {
@@ -591,8 +628,12 @@ public class FragmentosAccidentes extends Fragment {
     public void onStart() {
         //Inicia la interacción con la actividad
         super.onStart();
+        // Cargar y mostrar la última actualización
+        mostrarUltimaActualizacionAccidentes();
+        // Cargar los últimos valores guardados al regresar al fragmento
+        cargarUltimosValoresAccidentes();
     }
-
+    
     public void onPause() {
         //Suspende la interacción con la actividad
         super.onPause();

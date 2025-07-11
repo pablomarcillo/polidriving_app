@@ -9,8 +9,8 @@ package com.polidriving.mobile.clases.principal;
 //Clases usadas para el mapeo de cadenas
 //Clases usadas para el uso de voz
 import com.polidriving.mobile.clases.notificaciones.NotificacionesVoz;
+import com.polidriving.mobile.BuildConfig;
 import android.graphics.drawable.ColorDrawable;
-import androidx.lifecycle.ViewModelProvider;
 import android.content.SharedPreferences;
 import android.content.DialogInterface;
 import android.annotation.SuppressLint;
@@ -32,7 +32,9 @@ import java.util.Calendar;
 import android.view.View;
 import android.os.Bundle;
 import android.util.Log;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 /**
  * @noinspection ALL
  */
@@ -42,7 +44,7 @@ public class FragmentosVehiculo extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private NotificacionesVoz conversor = null;
     //static ImageView resultadoBandera;
-    private FragmentoModeloVista vista;
+    // Removed ViewModel instance as we're using static methods
     Boolean get_set_MuyAlta = false;
     static LinearLayout grupoActual;
     static LinearLayout grupoNivel;
@@ -60,9 +62,27 @@ public class FragmentosVehiculo extends Fragment {
     static TextView carga;
     static TextView rpm;
 
+    // Variable para el TextView de última actualización
+    private TextView txtUltimaActualizacionVehiculo;
+    private static final String PREFS_NAME = "VehiculoPrefs";
+    private static final String LAST_UPDATE_KEY = "last_vehiculo_update";
+    
+    // Claves para SharedPreferences para persistir valores
+    private static final String KEY_VELOCIDAD = "ultimo_valor_velocidad";
+    private static final String KEY_RPM = "ultimo_valor_rpm";
+    private static final String KEY_TEMPERATURA = "ultimo_valor_temperatura";
+    private static final String KEY_VOLTAJE = "ultimo_valor_voltaje";
+    private static final String KEY_POSICION = "ultimo_valor_posicion";
+    private static final String KEY_CARGA = "ultimo_valor_carga";
+    private static final String KEY_DISTANCIA = "ultimo_valor_distancia";
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Creando un vista de los elementos de la actividad
         View view = inflater.inflate(R.layout.fragmento_principal_vehiculo, container, false);
+        
+        //Inicializando el TextView de última actualización
+        txtUltimaActualizacionVehiculo = view.findViewById(R.id.txtUltimaActualizacionVehiculo);
+        
         //Inicializando las variables con los elementos de la actividad
         distancia = view.findViewById(R.id.txtRespuestaDistanciaRecorridaVehiculo);
         //resultadoBandera = view.findViewById(R.id.imagenBanderaDatosVehiculo);
@@ -81,6 +101,9 @@ public class FragmentosVehiculo extends Fragment {
         //Estableciendo la fecha para mostrar al usuario
         //presentarFecha();
         actual.setText("Esperando…");
+        
+        // Cargar los últimos valores guardados antes de observar los datos
+        cargarUltimosValores();
 
         //Creación de un segundo hilo que permite presentar la información de los datos en tiempo real
         Handler handler_datos = new Handler();
@@ -89,23 +112,10 @@ public class FragmentosVehiculo extends Fragment {
                 //Llamando al método que obtiene los datos después de realizar la consulta POST
                 presentarDatos();
                 presentarFecha();
-                //Segmento de código que permite actualizar la información a presentar cada 5 segundos
-                handler_datos.postDelayed(this, 5000);
+                //Segmento de código que permite actualizar la información a presentar cada VEHICULO_UPDATE_INTERVAL_MS milisegundos
+                handler_datos.postDelayed(this, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
             }
-        }, 5000);
-
-        //Creación de un tercer hilo que permite presentar las alertas gráficas y sonoras de los datos en tiempo real
-        /*Handler handler_alertas = new Handler();
-        handler_alertas.postDelayed(new Runnable() {
-            public void run() {
-                //Llamando al método que permite presentar las alertas según su nivel: Muy Alto, Alto, Media y Baja
-                presentarAlertas();
-                //Segmento de código que permite actualizar la información a presentar cada 5 segundos
-                handler_alertas.postDelayed(this, 10000);
-            }
-        }, 10000);*/
-
-        //Presentando la información en el fragmento de vista
+        }, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
         return view;
     }
 
@@ -113,15 +123,13 @@ public class FragmentosVehiculo extends Fragment {
         // Creando un vista de los elementos de la actividad
         super.onCreate(savedInstanceState);
 
-        // Manejando la ubicación de la vista
-        vista = new ViewModelProvider(this).get(FragmentoModeloVista.class);
         //Variable que permite ubicar la posición del fragmento en la actividad principal
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         //Regresando la ubicación actual a la actividad principal
-        vista.setIndex(index);
+        FragmentoModeloVista.setIndex(index);
         //Instanciando con la clase de notificación por voz
         conversor = new NotificacionesVoz();
         conversor.init(getActivity());
@@ -307,175 +315,152 @@ public class FragmentosVehiculo extends Fragment {
         mensajeMostrado.show();
     }
 
-    private void presentarAlertas() {
-        try {
-            //Ocultando parámetro de información no usado
-            //porcentaje.setVisibility(View.INVISIBLE);
-            //resultadoBandera.setVisibility(View.INVISIBLE);
-            //Segmento de código que permite observar en tiempo real los cambios que se dan en la información
-            FragmentoModeloVista.getRespuestaAgente().observe(getViewLifecycleOwner(), new Observer<String>() {
-                public void onChanged(@Nullable String s) {
-                    //Verificando que los parametros recibidos no sean vacíos
-                    assert s != null;
-                    //Verificación o Creación del archivo local de configuraciones de Usuario
-                    SharedPreferences configuracionUsuario = requireActivity().getSharedPreferences("Preferencias", Context.MODE_PRIVATE);
-                    //Obteniendo los datos a presentar
-                    boolean alertaMuyAlta = configuracionUsuario.getBoolean("Alerta Muy Alta", false);
-                    boolean alertaMedia = configuracionUsuario.getBoolean("Alerta Media", false);
-                    boolean alertaAlta = configuracionUsuario.getBoolean("Alerta Alta", false);
-                    boolean alertaBaja = configuracionUsuario.getBoolean("Alerta Baja", false);
-                    //Cambiando la información visual de los elementos
-                    get_set_MuyAlta = alertaMuyAlta;
-                    get_set_Media = alertaMedia;
-                    get_set_Alta = alertaAlta;
-                    get_set_Baja = alertaBaja;
-                    //Comparando el valor recibido con el nivel 4
-                    if (s.equals("{\"Output\": 4}") && get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                        //Iniciando alerta sonora de nivel 4
-                        String mensaje = "Nivel de Riesgo Muy Alta";
-                        conversor.palabra(mensaje);
-                        mostrarRojo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 4}") && !get_set_MuyAlta) {
-                        //Presentando las alertas gráficas de nivel 4 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        //resultadoBandera.setImageResource(R.drawable.rojo);
-                        //porcentaje.setText("25%");
-                    }
-                    //Comparando el valor recibido con el nivel 3
-                    if (s.equals("{\"Output\": 3}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                        //Iniciando alerta sonora de nivel 3
-                        String mensaje = "Nivel de Riesgo Alta";
-                        conversor.palabra(mensaje);
-                        mostrarNaranja(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 3}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 3 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
-                        resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        //resultadoBandera.setImageResource(R.drawable.naranja);
-                        //porcentaje.setText("50%");
-                    }
-                    //Comparando el valor recibido con el nivel 2
-                    if (s.equals("{\"Output\": 2}") && get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                        //Iniciando alerta sonora de nivel 2
-                        String mensaje = "Nivel de Riesgo Media";
-                        conversor.palabra(mensaje);
-                        mostrarAmarillo(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 2}") && !get_set_Alta) {
-                        //Presentando las alertas gráficas de nivel 2 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
-                        resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        //resultadoBandera.setImageResource(R.drawable.amarillo);
-                        //porcentaje.setText("75%");
-                    }
-                    //Comparando el valor recibido con el nivel 1
-                    if (s.equals("{\"Output\": 1}") && get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
-                        //Iniciando alerta sonora de nivel 1
-                        String mensaje = "Nivel de Riesgo Baja";
-                        conversor.palabra(mensaje);
-                        mostrarVerde(mensaje);
-                    }
-                    if (s.equals("{\"Output\": 1}") && !get_set_Baja) {
-                        //Presentando las alertas gráficas de nivel 1 al usuario
-                        grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
-                        resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        //resultadoBandera.setImageResource(R.drawable.verde);
-                        //porcentaje.setText("100%");
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error Alertas", e.toString());
+    /**
+     * Carga los últimos valores guardados desde SharedPreferences
+     */
+    private void cargarUltimosValores() {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            
+            // Cargar último valor de velocidad (por defecto "0 Km/h")
+            String ultimaVelocidad = prefs.getString(KEY_VELOCIDAD, "0 Km/h");
+            if (velocidad != null) velocidad.setText(ultimaVelocidad);
+            
+            // Cargar último valor de RPM (por defecto "0 rpm")
+            String ultimoRpm = prefs.getString(KEY_RPM, "0 rpm");
+            if (rpm != null) rpm.setText(ultimoRpm);
+            
+            // Cargar último valor de temperatura (por defecto "0 °C")
+            String ultimaTemperatura = prefs.getString(KEY_TEMPERATURA, "0 °C");
+            if (temperatura != null) temperatura.setText(ultimaTemperatura);
+            
+            // Cargar último valor de voltaje (por defecto "0 V")
+            String ultimoVoltaje = prefs.getString(KEY_VOLTAJE, "0 V");
+            if (voltaje != null) voltaje.setText(ultimoVoltaje);
+            
+            // Cargar último valor de posición (por defecto "0°")
+            String ultimaPosicion = prefs.getString(KEY_POSICION, "0°");
+            if (posicion != null) posicion.setText(ultimaPosicion);
+            
+            // Cargar último valor de carga (por defecto "0 V")
+            String ultimaCarga = prefs.getString(KEY_CARGA, "0 V");
+            if (carga != null) carga.setText(ultimaCarga);
+            
+            // Cargar último valor de distancia (por defecto "0 m")
+            String ultimaDistancia = prefs.getString(KEY_DISTANCIA, "0 m");
+            if (distancia != null) distancia.setText(ultimaDistancia);
         }
     }
+    
+    /**
+     * Guarda un valor en SharedPreferences
+     */
+    private void guardarValor(String clave, String valor) {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(clave, valor);
+            editor.apply();
+        }
+    }
+
 
     private void presentarDatos() {
         //Segmento de código que obtiene desde el agente y la actividad principal los datos a presentar en pantalla
         try {
+            // Variable para controlar si se han actualizado los datos
+            boolean datosActualizados = false;
+            
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getVelocidad().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    velocidad.setText(s + " Km/h");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + " Km/h";
+                        velocidad.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValor(KEY_VELOCIDAD, textoCompleto);
+                        // Actualizar timestamp cuando se reciben datos
+                        actualizarTimestampVehiculo();
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getRpm().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    rpm.setText(s + " rpm");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + " rpm";
+                        rpm.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValor(KEY_RPM, textoCompleto);
+                    }
                 }
             });
 
-            //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
+            //Llamando al método establecido in la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getMotor().observe(getViewLifecycleOwner(), new Observer<String>() {
                 //Estableciendo el texto de forma visual que se envió del Dataset
                 public void onChanged(@Nullable String s) {
-                    temperatura.setText(s + " °C");
+                    if (s != null && !s.isEmpty()) {
+                        String textoCompleto = s + " °C";
+                        temperatura.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValor(KEY_TEMPERATURA, textoCompleto);
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getBaterias().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    voltaje.setText(s + " V");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + " V";
+                        voltaje.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValor(KEY_VOLTAJE, textoCompleto);
+                    }
                 }
             });
 
-            //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
+            //Llamando al método establecido in la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getThrottle_position().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    posicion.setText(s + "°");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + "°";
+                        posicion.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValor(KEY_POSICION, textoCompleto);
+                    }
                 }
             });
 
             //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getBaterias().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    carga.setText(s + " V");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + " V";
+                        carga.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValor(KEY_CARGA, textoCompleto);
+                    }
                 }
             });
 
-            //Llamando al método establecido en la clase Modelo Vista para obtener la información del Dataset
+            //Llamando al método establecido in la clase Modelo Vista para obtener la información del Dataset
             FragmentoModeloVista.getDistance_travelled().observe(getViewLifecycleOwner(), new Observer<String>() {
                 public void onChanged(@Nullable String s) {
-                    //Estableciendo el texto de forma visual que se envió del Dataset
-                    distancia.setText(s + " m");
+                    if (s != null && !s.isEmpty()) {
+                        //Estableciendo el texto de forma visual que se envió del Dataset
+                        String textoCompleto = s + " m";
+                        distancia.setText(textoCompleto);
+                        // Guardar el valor en SharedPreferences
+                        guardarValor(KEY_DISTANCIA, textoCompleto);
+                    }
                 }
             });
         } catch (Exception e) {
@@ -511,6 +496,44 @@ public class FragmentosVehiculo extends Fragment {
     public void onStart() {
         //Inicia la interacción con la actividad
         super.onStart();
+        // Cargar y mostrar la última actualización
+        mostrarUltimaActualizacion();
+        // Cargar los últimos valores guardados al regresar al fragmento
+        cargarUltimosValores();
+    }
+    
+    /**
+     * Actualiza la marca de tiempo de la última actualización de vehículo
+     */
+    public void actualizarTimestampVehiculo() {
+        if (getActivity() != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(LAST_UPDATE_KEY, System.currentTimeMillis());
+            editor.apply();
+            
+            mostrarUltimaActualizacion();
+        }
+    }
+    
+    /**
+     * Muestra la última actualización en el TextView correspondiente
+     */
+    private void mostrarUltimaActualizacion() {
+        if (getActivity() != null && txtUltimaActualizacionVehiculo != null) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            long lastUpdate = prefs.getLong(LAST_UPDATE_KEY, 0);
+            
+            if (lastUpdate == 0) {
+                txtUltimaActualizacionVehiculo.setText(getString(R.string.nunca_actualizado));
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                String fechaFormateada = sdf.format(new Date(lastUpdate));
+                txtUltimaActualizacionVehiculo.setText(
+                    String.format(getString(R.string.ultima_actualizacion_vehiculo), fechaFormateada)
+                );
+            }
+        }
     }
 
     public void onPause() {

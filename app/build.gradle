@@ -36,8 +36,16 @@ android {
 
         buildConfigField "String", "URL_API_PREDICTOR", "\"${URL_API_PREDICTOR}\""
 
-        buildConfigField "int", "TIMEOUT_API_PREDICTOR", "${TIMEOUT_API_PREDICTOR}"
-        buildConfigField "int", "INTERVALO_ENTRE_PETICIONES", "${INTERVALO_ENTRE_PETICIONES}"
+        // Timeouts para APIs (en milisegundos)
+        buildConfigField "int", "TIMEOUT_API_PREDICTOR_MS", "${TIMEOUT_API_PREDICTOR_MS}"
+        buildConfigField "int", "TIMEOUT_ACCUWEATHER_API_MS", "${TIMEOUT_ACCUWEATHER_API_MS}"
+        buildConfigField "int", "INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS", "${INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS}"
+        buildConfigField "int", "INTERVALO_ENTRE_PETICIONES_ACCUWEATHER_API_MS", "${INTERVALO_ENTRE_PETICIONES_ACCUWEATHER_API_MS}"
+        
+        // Intervalos de actualización (en milisegundos)
+        buildConfigField "int", "VEHICULO_UPDATE_INTERVAL_MS", "${VEHICULO_UPDATE_INTERVAL_MS}"
+        buildConfigField "int", "CLIMA_UPDATE_INTERVAL_MS", "${CLIMA_UPDATE_INTERVAL_MS}"
+        buildConfigField "int", "ACCIDENTES_UPDATE_INTERVAL_MS", "${ACCIDENTES_UPDATE_INTERVAL_MS}"
     }
     buildTypes {
         release {

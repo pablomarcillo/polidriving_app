@@ -464,7 +464,7 @@ public class DataBaseAccess {
      */
     public CharSequence agregarVehiculo(String placa, String marca, String modelo, String anoFabricacion, 
                                        String tipoCombustible, String cilindraje, String tipoCarroceria, 
-                                       String transmision, String traccion, String color, String correoUsuario) {
+                                       String transmision, String traccion, String numeroAirbags, String correoUsuario) {
         //Crear un nuevo proveedor de credenciales
         dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
@@ -480,7 +480,9 @@ public class DataBaseAccess {
         nuevoVehiculo.put("TipoCarroceria", new AttributeValue(tipoCarroceria));
         nuevoVehiculo.put("Transmision", new AttributeValue(transmision));
         nuevoVehiculo.put("Traccion", new AttributeValue(traccion));
-        nuevoVehiculo.put("Color", new AttributeValue(color));
+        // Validar numeroAirbags antes de guardarlo
+        String airbagsValue = (numeroAirbags == null || numeroAirbags.trim().isEmpty()) ? "0" : numeroAirbags.trim();
+        nuevoVehiculo.put("NumeroAirbags", new AttributeValue().withN(airbagsValue));
         nuevoVehiculo.put("CorreoUsuario", new AttributeValue(correoUsuario));
         nuevoVehiculo.put("EsVehiculoActual", new AttributeValue().withBOOL(false));
 
@@ -497,7 +499,7 @@ public class DataBaseAccess {
      */
     public CharSequence actualizarVehiculo(String placa, String marca, String modelo, String anoFabricacion, 
                                           String tipoCombustible, String cilindraje, String tipoCarroceria, 
-                                          String transmision, String traccion, String color, String correoUsuario) {
+                                          String transmision, String traccion, String numeroAirbags, String correoUsuario) {
         //Crear un nuevo proveedor de credenciales
         dbClient_1 = new AmazonDynamoDBClient(new BasicAWSCredentials(BASE_DATOS_ACCESS_KEY, BASE_DATOS_ACCESS_SECRET_KEY));
         dbClient_1.setRegion(Region.getRegion(Regions.US_EAST_1));
@@ -513,7 +515,9 @@ public class DataBaseAccess {
         vehiculoActualizado.put("TipoCarroceria", new AttributeValue(tipoCarroceria));
         vehiculoActualizado.put("Transmision", new AttributeValue(transmision));
         vehiculoActualizado.put("Traccion", new AttributeValue(traccion));
-        vehiculoActualizado.put("Color", new AttributeValue(color));
+        // Validar numeroAirbags antes de guardarlo
+        String airbagsValue = (numeroAirbags == null || numeroAirbags.trim().isEmpty()) ? "0" : numeroAirbags.trim();
+        vehiculoActualizado.put("NumeroAirbags", new AttributeValue().withN(airbagsValue));
         vehiculoActualizado.put("CorreoUsuario", new AttributeValue(correoUsuario));
 
         // Obtener el estado actual del vehículo para mantener EsVehiculoActual
@@ -585,7 +589,13 @@ public class DataBaseAccess {
                 atributos.add(Objects.requireNonNull(map.get("TipoCarroceria")).getS()); //6
                 atributos.add(Objects.requireNonNull(map.get("Transmision")).getS()); //7
                 atributos.add(Objects.requireNonNull(map.get("Traccion")).getS()); //8
-                atributos.add(Objects.requireNonNull(map.get("Color")).getS()); //9
+                // Manejo seguro de NumeroAirbags
+                AttributeValue airbagsValue = map.get("NumeroAirbags");
+                if (airbagsValue != null && airbagsValue.getN() != null) {
+                    atributos.add(airbagsValue.getN()); //9
+                } else {
+                    atributos.add("0"); //9 - Valor por defecto si es null
+                }
                 atributos.add(Objects.requireNonNull(map.get("CorreoUsuario")).getS()); //10
                 atributos.add(String.valueOf(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL())); //11
                 break;
@@ -613,6 +623,13 @@ public class DataBaseAccess {
             String correoVehiculo = Objects.requireNonNull(map.get("CorreoUsuario")).getS();
 
             if (correoVehiculo.equals(correoUsuario)) {
+                // Manejo seguro de NumeroAirbags
+                AttributeValue airbagsValue = map.get("NumeroAirbags");
+                String numeroAirbags = "0"; // Valor por defecto
+                if (airbagsValue != null && airbagsValue.getN() != null) {
+                    numeroAirbags = airbagsValue.getN();
+                }
+                
                 // Crear una cadena con los datos del vehículo separados por |
                 String vehiculoInfo = Objects.requireNonNull(map.get("Placa")).getS() + "|" +
                                     Objects.requireNonNull(map.get("Marca")).getS() + "|" +
@@ -623,7 +640,7 @@ public class DataBaseAccess {
                                     Objects.requireNonNull(map.get("TipoCarroceria")).getS() + "|" +
                                     Objects.requireNonNull(map.get("Transmision")).getS() + "|" +
                                     Objects.requireNonNull(map.get("Traccion")).getS() + "|" +
-                                    Objects.requireNonNull(map.get("Color")).getS() + "|" +
+                                    numeroAirbags + "|" +
                                     Objects.requireNonNull(map.get("CorreoUsuario")).getS() + "|" +
                                     String.valueOf(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL());
                 vehiculos.add(vehiculoInfo);
@@ -687,7 +704,9 @@ public class DataBaseAccess {
         vehiculoActualizado.put("TipoCarroceria", new AttributeValue(datos[6].trim()));
         vehiculoActualizado.put("Transmision", new AttributeValue(datos[7].trim()));
         vehiculoActualizado.put("Traccion", new AttributeValue(datos[8].trim()));
-        vehiculoActualizado.put("Color", new AttributeValue(datos[9].trim()));
+        // Validar numeroAirbags antes de guardarlo
+        String airbagsValue = (datos[9] == null || datos[9].trim().isEmpty()) ? "0" : datos[9].trim();
+        vehiculoActualizado.put("NumeroAirbags", new AttributeValue().withN(airbagsValue));
         vehiculoActualizado.put("CorreoUsuario", new AttributeValue(datos[10].trim()));
         vehiculoActualizado.put("EsVehiculoActual", new AttributeValue().withBOOL(esActual));
 
@@ -727,7 +746,13 @@ public class DataBaseAccess {
                 atributos.add(Objects.requireNonNull(map.get("TipoCarroceria")).getS()); //6
                 atributos.add(Objects.requireNonNull(map.get("Transmision")).getS()); //7
                 atributos.add(Objects.requireNonNull(map.get("Traccion")).getS()); //8
-                atributos.add(Objects.requireNonNull(map.get("Color")).getS()); //9
+                // Manejo seguro de NumeroAirbags
+                AttributeValue airbagsValue = map.get("NumeroAirbags");
+                if (airbagsValue != null && airbagsValue.getN() != null) {
+                    atributos.add(airbagsValue.getN()); //9
+                } else {
+                    atributos.add("0"); //9 - Valor por defecto si es null
+                }
                 atributos.add(Objects.requireNonNull(map.get("CorreoUsuario")).getS()); //10
                 atributos.add(String.valueOf(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL())); //11
                 break;
@@ -766,7 +791,17 @@ public class DataBaseAccess {
                 vehiculo.setTipoCarroceria(Objects.requireNonNull(map.get("TipoCarroceria")).getS());
                 vehiculo.setTransmision(Objects.requireNonNull(map.get("Transmision")).getS());
                 vehiculo.setTraccion(Objects.requireNonNull(map.get("Traccion")).getS());
-                vehiculo.setColor(Objects.requireNonNull(map.get("Color")).getS());
+                // Manejo seguro de NumeroAirbags con validación de nulos
+                AttributeValue airbagsValue = map.get("NumeroAirbags");
+                if (airbagsValue != null && airbagsValue.getN() != null) {
+                    try {
+                        vehiculo.setNumeroAirbags(Integer.parseInt(airbagsValue.getN()));
+                    } catch (NumberFormatException e) {
+                        vehiculo.setNumeroAirbags(0); // Valor por defecto si hay error de formato
+                    }
+                } else {
+                    vehiculo.setNumeroAirbags(0); // Valor por defecto si es null
+                }
                 vehiculo.setActual(Objects.requireNonNull(map.get("EsVehiculoActual")).getBOOL());
                 
                 vehiculos.add(vehiculo);

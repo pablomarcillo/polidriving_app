@@ -11,8 +11,8 @@ package com.polidriving.mobile.clases.principal;
 //Clases usadas para el uso de voz
 import com.polidriving.mobile.databinding.FragmentoPrincipalDatosBinding;
 import com.polidriving.mobile.clases.notificaciones.NotificacionesVoz;
+import com.polidriving.mobile.BuildConfig;
 import android.graphics.drawable.ColorDrawable;
-import androidx.lifecycle.ViewModelProvider;
 import android.content.SharedPreferences;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -43,7 +43,7 @@ public class FragmentosDatos extends Fragment {
     //Creación de un instancia a la clase de notificaciones de voz TTS
     private NotificacionesVoz conversor = null;
     //Creación del fragmento de datos
-    private FragmentoModeloVista vista;
+    // Removed ViewModel instance as we're using static methods
     //Creación de variables para presentar información
     Boolean get_set_MuyAlta = false;
     Boolean get_set_Media = false;
@@ -59,20 +59,20 @@ public class FragmentosDatos extends Fragment {
             public void run() {
                 //Llamando al método que obtiene los datos después de realizar la consulta POST
                 presentarDatos();
-                //Segmento de código que permite actualizar la información a presentar cada 0.5 segundos
-                handler_datos.postDelayed(this, 250);
+                //Segmento de código que permite actualizar la información a presentar según VEHICULO_UPDATE_INTERVAL_SECONDS
+                handler_datos.postDelayed(this, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
             }
-        }, 250);
+        }, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
         //Creación de un tercer hilo que permite presentar las alertas gráficas y sonoras de los datos en tiempo real
         Handler handler_alertas = new Handler();
         handler_alertas.postDelayed(new Runnable() {
             public void run() {
                 //Llamando al método que permite presentar las alertas según su nivel: Muy Alto, Alto, Media y Baja
-                presentarAlertas();
+                //presentarAlertas();
                 //Segmento de código que permite actualizar la información a presentar cada 10 segundos
-                handler_alertas.postDelayed(this, 10000);
+                handler_alertas.postDelayed(this, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
             }
-        }, 10000);
+        }, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
         //Presentando la información en el fragmento de vista
         return vinculador.getRoot();
     }
@@ -80,14 +80,14 @@ public class FragmentosDatos extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         //Creación y presentación visual de la actividad
         super.onCreate(savedInstanceState);
-        vista = new ViewModelProvider(this).get(FragmentoModeloVista.class);
+        // Removed ViewModel instantiation
         //Variable que permite ubicar la posición del fragmento en la actividad principal
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         //Regresando la ubicación actual a la actividad principal
-        vista.setIndex(index);
+        FragmentoModeloVista.setIndex(index);
         //Instanciando con la clase de notificación por voz
         conversor = new NotificacionesVoz();
         conversor.init(getActivity());
@@ -309,7 +309,7 @@ public class FragmentosDatos extends Fragment {
                         //Iniciando alerta sonora de nivel 4
                         String mensaje = "Nivel de Riesgo Muy Alta";
                         conversor.palabra(mensaje);
-                        mostrarRojo(mensaje);
+                        AlertManager.getInstance().mostrarAlerta(getActivity(), "rojo", mensaje);
                     }
                     //Comparando el valor recibido con el nivel 3
                     if (s.equals("{\"Output\": 3}") && get_set_Alta) {
@@ -320,7 +320,7 @@ public class FragmentosDatos extends Fragment {
                         //Iniciando alerta sonora de nivel 3
                         String mensaje = "Nivel de Riesgo Alta";
                         conversor.palabra(mensaje);
-                        mostrarNaranja(mensaje);
+                        AlertManager.getInstance().mostrarAlerta(getActivity(), "naranja", mensaje);
                     }
                     //Comparando el valor recibido con el nivel 2
                     if (s.equals("{\"Output\": 2}") && get_set_Alta) {
@@ -331,7 +331,7 @@ public class FragmentosDatos extends Fragment {
                         //Iniciando alerta sonora de nivel 2
                         String mensaje = "Nivel de Riesgo Media";
                         conversor.palabra(mensaje);
-                        mostrarAmarillo(mensaje);
+                        AlertManager.getInstance().mostrarAlerta(getActivity(), "amarillo", mensaje);
                     }
                     //Comparando el valor recibido con el nivel 1
                     if (s.equals("{\"Output\": 1}") && get_set_Baja) {
@@ -342,7 +342,7 @@ public class FragmentosDatos extends Fragment {
                         //Iniciando alerta sonora de nivel 1
                         String mensaje = "Nivel de Riesgo Baja";
                         conversor.palabra(mensaje);
-                        mostrarVerde(mensaje);
+                        AlertManager.getInstance().mostrarAlerta(getActivity(), "verde", mensaje);
                     }
                 }
             });

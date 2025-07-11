@@ -8,7 +8,7 @@ package com.polidriving.mobile.clases.principal;
 //Clases usadas para el uso de fragmentos
 //Clases usadas para el mapeo de cadenas
 import com.polidriving.mobile.databinding.FragmentoPrincipalFlujoBinding;
-import androidx.lifecycle.ViewModelProvider;
+import com.polidriving.mobile.BuildConfig;
 import android.annotation.SuppressLint;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.Nullable;
@@ -29,7 +29,7 @@ public class FragmentosFlujo extends Fragment {
     //Creación del concatenador de los fragmentos dentro de la actividad principal
     private FragmentoPrincipalFlujoBinding vinculador_flujo;
     //Creación del fragmento de flujo
-    private FragmentoModeloVista vista;
+    // Removed ViewModel instance as we're using static methods
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Creación y presentación visual del fragment en la actividad principal
@@ -41,7 +41,7 @@ public class FragmentosFlujo extends Fragment {
                 //Llamando al método que obtiene los datos después de realizar la consulta POST
                 presentarDatos();
                 //Segmento de código que permite actualizar la información a presentar cada 0.5 segundos
-                handler.postDelayed(this, 250);
+                handler.postDelayed(this, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
             }
         }, 250);
         //Creación de un tercer hilo que permite presentar las alertas gráficas de los datos en tiempo real
@@ -49,9 +49,9 @@ public class FragmentosFlujo extends Fragment {
         handler_alertas.postDelayed(new Runnable() {
             public void run() {
                 //Llamando al método que permite presentar las alertas según su nivel: Muy Alto, Alto, Media y Baja
-                presentarAlertas();
+                //presentarAlertas();
                 //Segmento de código que permite actualizar la información a presentar cada 0.5 segundos
-                handler_alertas.postDelayed(this, 10000);
+                handler_alertas.postDelayed(this, BuildConfig.VEHICULO_UPDATE_INTERVAL_MS);
             }
         }, 10000);
         //Presentando la información en el fragmento de vista
@@ -61,14 +61,14 @@ public class FragmentosFlujo extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         //Creación y presentación visual de la actividad
         super.onCreate(savedInstanceState);
-        vista = new ViewModelProvider(this).get(FragmentoModeloVista.class);
+        // Removed ViewModel instantiation
         //Variable que permite ubicar la posición del fragmento en la actividad principal
         int index = 2;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         //Regresando la ubicación actual a la actividad principal
-        vista.setIndex(index);
+        FragmentoModeloVista.setIndex(index);
     }
 
     private void presentarAlertas() {

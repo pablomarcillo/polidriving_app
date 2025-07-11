@@ -37,6 +37,12 @@
         tools:layout="@layout/fragmento_lateral_ayuda_comentarios" />
 
     <fragment
+        android:id="@+id/accion_vehiculos"
+        android:name="com.polidriving.mobile.clases.vehiculos.VehiculosActivity"
+        android:label="@string/vehiculos"
+        tools:layout="@layout/activity_vehiculos" />
+
+    <fragment
         android:id="@+id/cerrar_sesion"
         android:name="com.polidriving.mobile.clases.menu.FragmentosCerrarSesion"
         android:label="@string/cerrar_sesion"

@@ -99,14 +99,19 @@ public class PrincipalActivity extends AppCompatActivity {
     LinearLayout grupoNivel;
     String chosenDeviceName;
     TextView resultadoTexto;
+    TextView datoRiesgoCalculado; // TextView para mostrar el valor de riesgo calculado
     String apellidoUsuario;
     String nombreUsuario;
     String tipoUsuario;
     TextView actual;
     Timer myTimer; // Timer para la lectura OBD
 
-    int TIMEOUT_API_PREDICTOR = BuildConfig.TIMEOUT_API_PREDICTOR; // Tiempo de espera para la API del predictor, en milisegundos
-    int INTERVALO_ENTRE_PETICIONES = BuildConfig.INTERVALO_ENTRE_PETICIONES; // Intervalo entre peticiones al modelo ML, en milisegundos
+    int TIMEOUT_API_PREDICTOR = BuildConfig.INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS; // Tiempo de espera para la API del predictor, en milisegundos
+    int INTERVALO_ENTRE_PETICIONES = BuildConfig.INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS; // Intervalo entre peticiones al modelo ML, en milisegundos
+
+    // Constantes para SharedPreferences de riesgo
+    private static final String RIESGO_PREFS_NAME = "RiesgoPrefs";
+    private static final String RIESGO_LAST_UPDATE_KEY = "last_riesgo_update";
 
     public boolean onOptionsItemSelected(MenuItem item) {
         // Maneja los clics del elemento de la barra de acción.
@@ -232,6 +237,8 @@ public class PrincipalActivity extends AppCompatActivity {
         //Presentación de los elementos visuales
         setContentView(vinculante.getRoot());
 
+        // Removed ViewModel instantiation as we're using static methods
+
         // Verifica si la barra de acción está disponible y luego establece el icono
         if (getSupportActionBar() != null) {
             getSupportActionBar().setIcon(R.mipmap.ic_menu_header);
@@ -258,6 +265,7 @@ public class PrincipalActivity extends AppCompatActivity {
 
         //Elementos de las alerta visuales
         resultadoTexto = vinculante.txtMedidaDatosRiesgo;
+        datoRiesgoCalculado = vinculante.txtDatoRiesgoCalculado;
         actual = vinculante.txtUltimaUpdateFechaRiesgo;
         grupoActual = vinculante.grupoFechaRiesgo;
         grupoNivel = vinculante.grupoNivelRiesgo;
@@ -268,6 +276,10 @@ public class PrincipalActivity extends AppCompatActivity {
 
         //Estableciendo la fecha para mostrar al usuario
         actual.setText("Esperando…");
+        datoRiesgoCalculado.setText(getString(R.string.dato_riesgo_calculado));
+        
+        // Mostrar la última actualización al iniciar
+        mostrarUltimaActualizacionRiesgo();
 
         //Llamando a la clase que Número de Pestañas que le informa a la actividad principal el número de fragmentos con los que se trabaja
         NumeroPestanas crearPaginas = new NumeroPestanas(this, getSupportFragmentManager());
@@ -366,9 +378,9 @@ public class PrincipalActivity extends AppCompatActivity {
                 //Llamando al método que permite presentar las alertas según su nivel: Muy Alto, Alto, Media y Baja
                 presentarAlertas();
                 //Segmento de código que permite actualizar la información a presentar cada 10 segundos
-                handler_alertas.postDelayed(this, 5000);
+                handler_alertas.postDelayed(this, 10000);
             }
-        }, 5000);
+        }, BuildConfig.INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -376,196 +388,36 @@ public class PrincipalActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         
         // Debug: Verificar que el menú de vehículos está configurado correctamente
-        MenuItem vehiculosItem = menu.findItem(R.id.accion_vehiculos);
-        if (vehiculosItem != null) {
-            Log.d("PrincipalActivity", "Menú vehículos encontrado. Título: " + vehiculosItem.getTitle());
-            Log.d("PrincipalActivity", "Es visible: " + vehiculosItem.isVisible());
-            Log.d("PrincipalActivity", "Es habilitado: " + vehiculosItem.isEnabled());
-        } else {
-            Log.e("PrincipalActivity", "Menú vehículos NO encontrado");
-        }
-        
+        MenuItem vehiculosItem = menu.findItem(R.id.accion_vehiculos);     
         return true;
     }
 
     private void mostrarAmarillo(String texto) {
-        //Mostrar amarillo
-        //Método que permiten presentar un cuadro de diálogo personalizado
-        //El cuadro de diálogo muestra información referente al estado de alerta Media
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        View view = new View(this);
-        view = getLayoutInflater().inflate(R.layout.mensaje_amarillo, view.findViewById(R.id.contenedorAmarillo));
-        builder.setView(view);
-        //Estableciendo el mensaje estandar a mostrar en el cuadro de diálogo
-        ((TextView) view.findViewById(R.id.tituloAmarillo)).setText(getResources().getString(R.string.mensaje_alerta));
-        ((TextView) view.findViewById(R.id.textoAmarillo)).setText(texto);
-        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.precaucion);
-        //Llamando al cuadro de diálogo personalizado
-        final android.app.AlertDialog mensajeMostrado = builder.create();
-        View finalView = view;
-        mensajeMostrado.setOnShowListener(new DialogInterface.OnShowListener() {
-            public void onShow(DialogInterface dialog) {
-                //Estableciendo un contador de 5 segundo en el cuadro de diálogo con intervalo de 1 segundo
-                new CountDownTimer(5000, 1000) {
-                    public void onTick(long seg) {
-                        String ok = "OK";
-                        ((Button) finalView.findViewById(R.id.okAmarillo)).setText(MessageFormat.format("{0}{1}{2}{3}{4}", ok, " ", "(", ((seg / 1000) + 1), ")"));
-                    }
-
-                    public void onFinish() {
-                        //Descartando mensaje de alerta
-                        mensajeMostrado.dismiss();
-                    }
-                }.start();
-            }
-        });
-        view.findViewById(R.id.okAmarillo).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //Descartando mensaje de alerta
-                mensajeMostrado.dismiss();
-            }
-        });
-        if (mensajeMostrado.getWindow() != null) {
-            //Dando transparencia al mensaje de alerta
-            mensajeMostrado.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        //Presentando mensaje al usuario
-        mensajeMostrado.show();
+        //Mostrar amarillo usando el AlertManager centralizado
+        //El AlertManager controla que no se muestren múltiples alertas al mismo tiempo
+        //y mantiene un delay de 10 segundos entre alertas
+        AlertManager.getInstance().mostrarAlerta(this, "amarillo", texto);
     }
 
     private void mostrarNaranja(String texto) {
-        //Mostrar naranja
-        //Método que permiten presentar un cuadro de diálogo personalizado
-        //El cuadro de diálogo muestra información referente al estado de alerta Alta
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        View view = new View(this);
-        view = getLayoutInflater().inflate(R.layout.mensaje_naranja, view.findViewById(R.id.contenedorNaranja));
-        builder.setView(view);
-        //Estableciendo el mensaje estandar a mostrar en el cuadro de diálogo
-        ((TextView) view.findViewById(R.id.tituloNaranja)).setText(getResources().getString(R.string.mensaje_alerta));
-        ((TextView) view.findViewById(R.id.textoNaranja)).setText(texto);
-        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.precaucion);
-        //Llamando al cuadro de diálogo personalizado
-        final android.app.AlertDialog mensajeMostrado = builder.create();
-        View finalView = view;
-        mensajeMostrado.setOnShowListener(new DialogInterface.OnShowListener() {
-            public void onShow(DialogInterface dialog) {
-                //Estableciendo un contador de 5 segundo en el cuadro de diálogo con intervalo de 1 segundo
-                new CountDownTimer(5000, 1000) {
-                    public void onTick(long seg) {
-                        String ok = "OK";
-                        ((Button) finalView.findViewById(R.id.okNaranja)).setText(MessageFormat.format("{0}{1}{2}{3}{4}", ok, " ", "(", ((seg / 1000) + 1), ")"));
-                    }
-
-                    public void onFinish() {
-                        //Descartando mensaje de alerta
-                        mensajeMostrado.dismiss();
-                    }
-                }.start();
-            }
-        });
-        view.findViewById(R.id.okNaranja).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //Descartando mensaje de alerta
-                mensajeMostrado.dismiss();
-            }
-        });
-        if (mensajeMostrado.getWindow() != null) {
-            //Dando transparencia al mensaje de alerta
-            mensajeMostrado.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        //Presentando mensaje al usuario
-        mensajeMostrado.show();
+        //Mostrar naranja usando el AlertManager centralizado
+        //El AlertManager controla que no se muestren múltiples alertas al mismo tiempo
+        //y mantiene un delay de 10 segundos entre alertas
+        AlertManager.getInstance().mostrarAlerta(this, "naranja", texto);
     }
 
     private void mostrarVerde(String texto) {
-        //Mostrar verde
-        //Método que permiten presentar un cuadro de diálogo personalizado
-        //El cuadro de diálogo muestra información referente al estado de alerta Bajo
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        View view = new View(this);
-        view = getLayoutInflater().inflate(R.layout.mensaje_verde, view.findViewById(R.id.contenedorVerde));
-        builder.setView(view);
-        //Estableciendo el mensaje estandar a mostrar en el cuadro de diálogo
-        ((TextView) view.findViewById(R.id.tituloVerde)).setText(getResources().getString(R.string.mensaje_alerta));
-        ((TextView) view.findViewById(R.id.textoVerde)).setText(texto);
-        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.precaucion);
-        //Llamando al cuadro de diálogo personalizado
-        final android.app.AlertDialog mensajeMostrado = builder.create();
-        View finalView = view;
-        mensajeMostrado.setOnShowListener(new DialogInterface.OnShowListener() {
-            public void onShow(DialogInterface dialog) {
-                //Estableciendo un contador de 5 segundo en el cuadro de diálogo con intervalo de 1 segundo
-                new CountDownTimer(5000, 1000) {
-                    public void onTick(long seg) {
-                        String ok = "OK";
-                        ((Button) finalView.findViewById(R.id.okVerde)).setText(MessageFormat.format("{0}{1}{2}{3}{4}", ok, " ", "(", ((seg / 1000) + 1), ")"));
-                    }
-
-                    public void onFinish() {
-                        //Descartando mensaje de alerta
-                        mensajeMostrado.dismiss();
-                    }
-                }.start();
-            }
-        });
-        view.findViewById(R.id.okVerde).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //Descartando mensaje de alerta
-                mensajeMostrado.dismiss();
-            }
-        });
-        if (mensajeMostrado.getWindow() != null) {
-            //Dando transparencia al mensaje de alerta
-            mensajeMostrado.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        //Presentando mensaje al usuario
-        mensajeMostrado.show();
+        //Mostrar verde usando el AlertManager centralizado
+        //El AlertManager controla que no se muestren múltiples alertas al mismo tiempo
+        //y mantiene un delay de 10 segundos entre alertas
+        AlertManager.getInstance().mostrarAlerta(this, "verde", texto);
     }
 
     private void mostrarRojo(String texto) {
-        //Mostrar rojo
-        //Método que permiten presentar un cuadro de diálogo personalizado
-        //El cuadro de diálogo muestra información referente al estado de alerta Muy ALta
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        View view = new View(this);
-        view = getLayoutInflater().inflate(R.layout.mensaje_rojo, view.findViewById(R.id.contenedorRojo));
-        builder.setView(view);
-        //Estableciendo el mensaje estandar a mostrar en el cuadro de diálogo
-        ((TextView) view.findViewById(R.id.tituloRojo)).setText(getResources().getString(R.string.mensaje_alerta));
-        ((TextView) view.findViewById(R.id.textoRojo)).setText(texto);
-        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.precaucion);
-        //Llamando al cuadro de diálogo personalizado
-        final android.app.AlertDialog mensajeMostrado = builder.create();
-        View finalView = view;
-        mensajeMostrado.setOnShowListener(new DialogInterface.OnShowListener() {
-            public void onShow(DialogInterface dialog) {
-                //Estableciendo un contador de 5 segundo en el cuadro de diálogo con intervalo de 1 segundo
-                new CountDownTimer(5000, 1000) {
-                    public void onTick(long seg) {
-                        String ok = "OK";
-                        ((Button) finalView.findViewById(R.id.okRojo)).setText(MessageFormat.format("{0}{1}{2}{3}{4}", ok, " ", "(", ((seg / 1000) + 1), ")"));
-                    }
-
-                    public void onFinish() {
-                        //Descartando mensaje de alerta
-                        mensajeMostrado.dismiss();
-                    }
-                }.start();
-            }
-        });
-        view.findViewById(R.id.okRojo).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //Descartando mensaje de alerta
-                mensajeMostrado.dismiss();
-            }
-        });
-        if (mensajeMostrado.getWindow() != null) {
-            //Dando transparencia al mensaje de alerta
-            mensajeMostrado.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        //Presentando mensaje al usuario
-        mensajeMostrado.show();
+        //Mostrar rojo usando el AlertManager centralizado
+        //El AlertManager controla que no se muestren múltiples alertas al mismo tiempo
+        //y mantiene un delay de 10 segundos entre alertas
+        AlertManager.getInstance().mostrarAlerta(this, "rojo", texto);
     }
 
     private void cargarConfiguracionOBD() {
@@ -591,7 +443,7 @@ public class PrincipalActivity extends AppCompatActivity {
             //Para la lectura se genera un hilo secundario, con el fin de estar leyendo el data set continuamente
             public void run() {
                 //Se llama al constructor para las variables obtenidas
-                FragmentoModeloVista cambio = new FragmentoModeloVista();
+                
                 try {
                     // Llamando a una nueva instancia de la base de datos
                     DataBaseAccess consulta = new DataBaseAccess();
@@ -618,7 +470,7 @@ public class PrincipalActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     //Enviando la información a presentar en pantalla con los datos del Dataset
-                                    cambio.datosRouteOne(token[5].replaceAll(" ", "").trim(), token[1].replaceAll(" ", "").trim(), token[4].replaceAll(" ", "").trim(), token[3].replaceAll(" ", "").trim(), token[0].replaceAll(" ", "").trim(), token[2].replaceAll(" ", "").trim());
+                                    FragmentoModeloVista.datosRouteOne(token[5].replaceAll(" ", "").trim(), token[1].replaceAll(" ", "").trim(), token[4].replaceAll(" ", "").trim(), token[3].replaceAll(" ", "").trim(), token[0].replaceAll(" ", "").trim(), token[2].replaceAll(" ", "").trim());
                                 }
                             });
                             //Se establece un tiempo entre la lectura de cada línea
@@ -643,7 +495,7 @@ public class PrincipalActivity extends AppCompatActivity {
             //Para la lectura se genera un hilo secundario, con el fin de estar leyendo el data set continuamente
             public void run() {
                 //Se llama al constructor para las variables obtenidas
-                FragmentoModeloVista cambio = new FragmentoModeloVista();
+                
                 try {
                     // Llamando a una nueva instancia de la base de datos
                     DataBaseAccess consulta = new DataBaseAccess();
@@ -673,7 +525,7 @@ public class PrincipalActivity extends AppCompatActivity {
                                     //Ejecutando el servicio de AWS
                                     agenteRespuesta.execute();
                                     //Enviando la información a presentar en pantalla with los datos del Dataset
-                                    cambio.datosDataSet(String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[38].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[45].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[37].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[39].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[26].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), "La: " + Double.parseDouble(token[13].replaceAll(" ", "").trim()) + "\n" + "Lo: " + Double.parseDouble(token[14].replaceAll(" ", "").trim()), String.valueOf(Integer.parseInt(token[38].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[43].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[29].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[8].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[30].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[28].replaceAll(" ", "").trim())), token[21].replaceAll(" ", "").trim(), String.valueOf(Integer.parseInt(token[7].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[17].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[41].replaceAll(" ", "").trim())));
+                                    FragmentoModeloVista.datosDataSet(String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[38].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[45].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[37].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[39].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[26].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), "La: " + Double.parseDouble(token[13].replaceAll(" ", "").trim()) + "\n" + "Lo: " + Double.parseDouble(token[14].replaceAll(" ", "").trim()), String.valueOf(Integer.parseInt(token[38].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[43].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[29].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[8].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[3].replaceAll(" ", "").trim())), String.valueOf(Integer.parseInt(token[30].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[28].replaceAll(" ", "").trim())), token[21].replaceAll(" ", "").trim(), String.valueOf(Integer.parseInt(token[7].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[17].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[41].replaceAll(" ", "").trim())));
                                 }
                             });
                             //Se establece un tiempo entre la lectura de cada línea
@@ -708,7 +560,7 @@ public class PrincipalActivity extends AppCompatActivity {
 
     public void iniciarLecturaOBD() {
         // Método que inicia la lectura desde la interfaz OBD-II.
-        long frecuencia = 5000;
+        long frecuencia = BuildConfig.INTERVALO_ENTRE_PETICIONES_API_PREDICTOR_MS;
         myTimer = new Timer();
         // myTimer.scheduleAtFixedRate(new TimerTask() {
         myTimer.schedule(new TimerTask() {
@@ -761,18 +613,20 @@ public class PrincipalActivity extends AppCompatActivity {
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
                         resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
+                        //datoRiesgoCalculado.setText("4");
                         //Iniciando alerta sonora de nivel 4
                         String mensaje = "Nivel de Riesgo Muy Alta";
                         conversor.palabra(mensaje);
                         mostrarRojo(mensaje);
-                        presentarFecha();
+                        actualizarTimestampRiesgo();
                     }
                     if (s.equals("{\"Output\": 4}") && !get_set_MuyAlta) {
                         //Presentando las alertas gráficas de nivel 4 al usuario
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_rojo));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_rojo));
                         resultadoTexto.setText(getString(R.string.medida_datos_muy_alta));
-                        presentarFecha();
+                        //datoRiesgoCalculado.setText("4");
+                        actualizarTimestampRiesgo();
                     }
                     //Comparando el valor recibido con el nivel 3
                     if (s.equals("{\"Output\": 3}") && get_set_Alta) {
@@ -780,18 +634,20 @@ public class PrincipalActivity extends AppCompatActivity {
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
                         resultadoTexto.setText(getString(R.string.medida_datos_alta));
+                        //datoRiesgoCalculado.setText("3");
                         //Iniciando alerta sonora de nivel 3
                         String mensaje = "Nivel de Riesgo Alta";
                         conversor.palabra(mensaje);
                         mostrarNaranja(mensaje);
-                        presentarFecha();
+                        actualizarTimestampRiesgo();
                     }
                     if (s.equals("{\"Output\": 3}") && !get_set_Alta) {
                         //Presentando las alertas gráficas de nivel 3 al usuario
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_naranja));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_naranja));
                         resultadoTexto.setText(getString(R.string.medida_datos_alta));
-                        presentarFecha();
+                        datoRiesgoCalculado.setText("3");
+                        actualizarTimestampRiesgo();
                     }
                     //Comparando el valor recibido con el nivel 2
                     if (s.equals("{\"Output\": 2}") && get_set_Alta) {
@@ -799,18 +655,20 @@ public class PrincipalActivity extends AppCompatActivity {
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
                         resultadoTexto.setText(getString(R.string.medida_datos_media));
+                        //datoRiesgoCalculado.setText("2");
                         //Iniciando alerta sonora de nivel 2
                         String mensaje = "Nivel de Riesgo Media";
                         conversor.palabra(mensaje);
                         mostrarAmarillo(mensaje);
-                        presentarFecha();
+                        actualizarTimestampRiesgo();
                     }
                     if (s.equals("{\"Output\": 2}") && !get_set_Alta) {
                         //Presentando las alertas gráficas de nivel 2 al usuario
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_amarillo));
                         resultadoTexto.setText(getString(R.string.medida_datos_media));
-                        presentarFecha();
+                        //datoRiesgoCalculado.setText("2");
+                        actualizarTimestampRiesgo();
                     }
                     //Comparando el valor recibido con el nivel 1
                     if (s.equals("{\"Output\": 1}") && get_set_Baja) {
@@ -818,24 +676,53 @@ public class PrincipalActivity extends AppCompatActivity {
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
                         resultadoTexto.setText(getString(R.string.medida_datos_baja));
+                        //datoRiesgoCalculado.setText("1");
                         //Iniciando alerta sonora de nivel 1
                         String mensaje = "Nivel de Riesgo Baja";
                         conversor.palabra(mensaje);
                         mostrarVerde(mensaje);
-                        presentarFecha();
+                        actualizarTimestampRiesgo();
                     }
                     if (s.equals("{\"Output\": 1}") && !get_set_Baja) {
                         //Presentando las alertas gráficas de nivel 1 al usuario
                         grupoActual.setBackgroundColor(getResources().getColor(R.color.color_verde));
                         grupoNivel.setBackgroundColor(getResources().getColor(R.color.color_verde));
                         resultadoTexto.setText(getString(R.string.medida_datos_baja));
-                        presentarFecha();
-
+                        //datoRiesgoCalculado.setText("1");
+                        actualizarTimestampRiesgo();
                     }
                 }
             });
         } catch (Exception e) {
             Log.e("Error Alertas", e.toString());
+        }
+    }
+
+    /**
+     * Actualiza la marca de tiempo de la última actualización de riesgo
+     */
+    private void actualizarTimestampRiesgo() {
+        SharedPreferences prefs = getSharedPreferences(RIESGO_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(RIESGO_LAST_UPDATE_KEY, System.currentTimeMillis());
+        editor.apply();
+        
+        mostrarUltimaActualizacionRiesgo();
+    }
+    
+    /**
+     * Muestra la última actualización de riesgo en el TextView correspondiente
+     */
+    private void mostrarUltimaActualizacionRiesgo() {
+        SharedPreferences prefs = getSharedPreferences(RIESGO_PREFS_NAME, Context.MODE_PRIVATE);
+        long lastUpdate = prefs.getLong(RIESGO_LAST_UPDATE_KEY, 0);
+        
+        if (lastUpdate == 0) {
+            actual.setText("Sin actualizar");
+        } else {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss", java.util.Locale.getDefault());
+            String fechaFormateada = sdf.format(new java.util.Date(lastUpdate));
+            actual.setText("Última actualización: " + fechaFormateada);
         }
     }
 
@@ -918,10 +805,26 @@ public class PrincipalActivity extends AppCompatActivity {
                 conversor.apagar();
                 conversor = null;
             }
+            
+            // Limpiar alertas pendientes y cerrar alerta actual si existe
+            AlertManager.getInstance().clearPendingAlerts();
+            AlertManager.getInstance().dismissCurrentAlert();
         } catch (Exception e) {
             Log.e("PrincipalActivity", "Error en onDestroy: " + e.getMessage());
         } finally {
             super.onDestroy();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            // Cerrar alerta actual cuando la actividad se pausa para evitar 
+            // alertas huérfanas cuando el usuario navega a otra actividad
+            AlertManager.getInstance().dismissCurrentAlert();
+        } catch (Exception e) {
+            Log.e("PrincipalActivity", "Error en onPause: " + e.getMessage());
         }
     }
 
@@ -935,7 +838,6 @@ public class PrincipalActivity extends AppCompatActivity {
                 //Esta clase lee texto desde un flujo de entrada de caracteres, almacenando los caracteres para proporcionar una lectura eficiente de caracteres, arreglos y líneas.
                 BufferedReader lector = new BufferedReader(new InputStreamReader(data, StandardCharsets.UTF_8));
                 //Se llama al constructor para las variables obtenidas
-                FragmentoModeloVista cambio = new FragmentoModeloVista();
                 String linea = "";
                 try {
                      //Se va leyendo el Dataset línea por línea
@@ -961,41 +863,6 @@ public class PrincipalActivity extends AppCompatActivity {
                         obtenerDatos.setHeart_rate(Integer.parseInt(token[17]));
                         obtenerDatos.setRpm_(Double.parseDouble(token[41]));
                         obtenerDatos.setSpeed(Integer.parseInt(token[3]));
-
-                        /*obtenerDatos.setDistance_travelled_total(Double.parseDouble(token[11]));
-                        obtenerDatos.setSpeed_vs_accidents_onsite(Integer.parseInt(token[43]));
-                        obtenerDatos.setSpeed_vs_steering_angle_(Integer.parseInt(token[40]));
-                        obtenerDatos.setReal_feel_temperature(Double.parseDouble(token[27]));
-                        obtenerDatos.setSpeed_vs_precipitation(Integer.parseInt(token[44]));
-                        obtenerDatos.setBarometric_pressure(Double.parseDouble(token[9]));
-                        obtenerDatos.setHas_precipitation(Integer.parseInt(token[23]));
-                        obtenerDatos.setRelative_humidity(Integer.parseInt(token[30]));
-                        obtenerDatos.setSteering_angle(Double.parseDouble(token[2]));
-                        obtenerDatos.setPrecipitation(Double.parseDouble(token[37]));
-                        obtenerDatos.setWind_direction(Integer.parseInt(token[29]));
-                        obtenerDatos.setAccident_rate(Integer.parseInt(token[45]));
-                        obtenerDatos.setSpeed_vs_rpm_(Integer.parseInt(token[42]));
-                        obtenerDatos.setTemperature(Double.parseDouble(token[26]));
-                        obtenerDatos.setWind_speed(Double.parseDouble(token[28]));
-                        obtenerDatos.setBody_battery(Integer.parseInt(token[19]));
-                        obtenerDatos.setVisibility(Double.parseDouble(token[31]));
-                        obtenerDatos.setCloud_cover(Integer.parseInt(token[34]));
-                        obtenerDatos.setIs_day_time(Integer.parseInt(token[25]));
-                        obtenerDatos.setId_vehicle(Integer.parseInt(token[12]));
-                        obtenerDatos.setPressure(Double.parseDouble(token[36]));
-                        obtenerDatos.setId_driver(Integer.parseInt(token[16]));
-                        obtenerDatos.setHas_precipitation_category(token[22]);
-                        obtenerDatos.setUv_index(Integer.parseInt(token[32]));
-                        obtenerDatos.setAltitude(Integer.parseInt(token[15]));
-                        obtenerDatos.setCeiling(Integer.parseInt(token[35]));
-                        obtenerDatos.setCurrent_weather_category(token[21]);
-                        obtenerDatos.setStress(Integer.parseInt(token[18]));
-                        obtenerDatos.setIndice(Integer.parseInt(token[0]));
-                        obtenerDatos.setIs_day_time_category(token[24]);
-                        obtenerDatos.setRpm(Integer.parseInt(token[4]));
-                        obtenerDatos.setUv_index_text(token[33]);
-                        obtenerDatos.setTime(token[1]);*/
-
                         //Mensaje de consola que presenta la información obtenida
                         Log.d("DATASET_LINEA", String.valueOf(obtenerDatos));
                         // Retornando al hilo principal
@@ -1007,7 +874,7 @@ public class PrincipalActivity extends AppCompatActivity {
                                 //Ejecutando el servicio de AWS
                                 agenteRespuesta.execute();
                                 //Enviando la información a presentar en pantalla con los datos del Dataset
-                                cambio.datosDataSet(String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[38])), String.valueOf(Double.parseDouble(token[45])), String.valueOf(Double.parseDouble(token[37])), String.valueOf(Double.parseDouble(token[39])), String.valueOf(Double.parseDouble(token[26])), String.valueOf(Integer.parseInt(token[3])), "La: " + Double.parseDouble(token[13]) + "\n" + "Lo: " + Double.parseDouble(token[14]), String.valueOf(Integer.parseInt(token[38])), String.valueOf(Integer.parseInt(token[43])), String.valueOf(Integer.parseInt(token[29])), String.valueOf(Double.parseDouble(token[8])), String.valueOf(Integer.parseInt(token[3])), String.valueOf(Integer.parseInt(token[30])), String.valueOf(Double.parseDouble(token[28])), String.valueOf(token[21]), String.valueOf(Integer.parseInt(token[7])), String.valueOf(Integer.parseInt(token[17])), String.valueOf(Double.parseDouble(token[41])));
+                                FragmentoModeloVista.datosDataSet(String.valueOf(Double.parseDouble(token[10].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[6].replaceAll(" ", "").trim())), String.valueOf(Double.parseDouble(token[38])), String.valueOf(Double.parseDouble(token[45])), String.valueOf(Double.parseDouble(token[37])), String.valueOf(Double.parseDouble(token[39])), String.valueOf(Double.parseDouble(token[26])), String.valueOf(Integer.parseInt(token[3])), "La: " + Double.parseDouble(token[13]) + "\n" + "Lo: " + Double.parseDouble(token[14]), String.valueOf(Integer.parseInt(token[38])), String.valueOf(Integer.parseInt(token[43])), String.valueOf(Integer.parseInt(token[29])), String.valueOf(Double.parseDouble(token[8])), String.valueOf(Integer.parseInt(token[3])), String.valueOf(Integer.parseInt(token[30])), String.valueOf(Double.parseDouble(token[28])), String.valueOf(token[21]), String.valueOf(Integer.parseInt(token[7])), String.valueOf(Integer.parseInt(token[17])), String.valueOf(Double.parseDouble(token[41])));
                                  }
                             });
                     }

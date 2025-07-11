@@ -48,11 +48,7 @@ public class FragmentoModeloVista extends ViewModel {
     };
 
     //Creación de variable para enviar, presentar y recibir información
-    private static LiveData<String> respuestaAgente = new LiveData<String>() {
-        public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super String> observer) {
-            super.observe(owner, observer);
-        }
-    };
+    private static final MutableLiveData<String> respuestaAgente = new MutableLiveData<>();
 
     //Creación de variable para enviar, presentar y recibir información
     private static LiveData<String> precipitacion = new LiveData<String>() {
@@ -199,10 +195,9 @@ public class FragmentoModeloVista extends ViewModel {
         public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super String> observer) {
             super.observe(owner, observer);
         }
-    };
-
+    };    
     //Creación del repositorio que permite presentar la información en las actividad principal riesgo
-    public void datosDataSet(String A, String B, String C, String D, String E, String F, String G, String H, String I, String J, String K, String L, String M, String N, String O, String P, String Q, String R, String S, String T) {
+    public static void datosDataSet(String A, String B, String C, String D, String E, String F, String G, String H, String I, String J, String K, String L, String M, String N, String O, String P, String Q, String R, String S, String T) {
         new Thread(new Runnable() {
             public void run() {
                 distance_travelled = Transformations.map(indice, input -> A);
@@ -230,7 +225,7 @@ public class FragmentoModeloVista extends ViewModel {
     }
 
     //Creación del repositorio que permite presentar la información en las actividad principal riesgo, accidentes, clima
-    public void datosRouteOne(String A, String B, String C, String D, String E, String F) {
+    public static void datosRouteOne(String A, String B, String C, String D, String E, String F) {
         new Thread(new Runnable() {
             public void run() {
                 velocidad = Transformations.map(indice, input -> A);
@@ -340,78 +335,69 @@ public class FragmentoModeloVista extends ViewModel {
     }
 
     //Creación del get que permite obtener la información a presentar
-    public void datosRespuesta(String RESPUESTA) {
-        new Thread(new Runnable() {
-            public void run() {
-                respuestaAgente = Transformations.map(indice, input -> RESPUESTA);
-                //TODO
-            }
-        }).start();
+    public static void datosRespuesta(String RESPUESTA) {
+        // Verificar si estamos en el hilo principal
+        if (android.os.Looper.myLooper() == android.os.Looper.getMainLooper()) {
+            // Estamos en el hilo principal, actualizar directamente
+            respuestaAgente.setValue(RESPUESTA);
+        } else {
+            // Estamos en un hilo secundario, usar postValue
+            respuestaAgente.postValue(RESPUESTA);
+        }
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getSegmento() {
         return segmento;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getLatitud() {
         return latitud;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getHumedad() {
         return humedad;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getControl() {
         return control;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getViento() {
         return viento;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getLugar() {
         return lugar;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getMotor() {
         return motor;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getHeart() {
         return heart;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getRpm() {
         return rpm;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
     public static LiveData<String> getVia() {
         return via;
-        //TODO
     }
 
     //Creación del get que permite obtener la información a presentar
-    public void setIndex(int index) {
+    public static void setIndex(int index) {
         indice.setValue(index);
-        //TODO
     }
 }

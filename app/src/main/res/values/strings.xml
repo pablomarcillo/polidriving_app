@@ -60,14 +60,14 @@
     <string name="temperatura_media">Real Feel Temperature</string>
     <string name="posicion_acelerador">Posición Acelerador</string>
     <string name="distancia_recorrida">Distancia Recorrida</string>
-    <string name="medida_datos_muy_alta">Riesgo: MUY ALTO</string>
+    <string name="medida_datos_muy_alta">Riesgo: MUY ALTO </string>
     <string name="informacion_clima">Información de Clima</string>
     <string name="on_site_accidents">Accidentes Sitio</string>
     <string name="ayuda_comentarios">Ayuda y Comentarios</string>
     <string name="angulo_inclinacion">Ángulo Inclinación</string>
     <string name="elegir_dispositivo">Elegir Dispositivo</string>
     <string name="riesgo_calculando">Riesgo:</string>
-    <string name="dato_riesgo_calculado"> Calculando…</string>
+    <string name="dato_riesgo_calculado"> </string>
     <string name="usuario_apellido">Apellido de Cliente</string>
     <string name="tab_flujo">Condiciones Metereológicas</string>
     <string name="riesgo_accidente">Riesgo de Accidente</string>
@@ -99,7 +99,7 @@
     <string name="nombre_apellido">Nombre y Apellido</string>
     <string name="seleccion_engine_load">Carga Motor</string>
     <string name="humedad_relativa">Humedad Relativa</string>
-    <string name="last_update">Última Actualización:</string>
+    <string name="last_update"></string>
     <string name="on_site_hour">Accidentes Hora</string>
     <string name="usuario_nombre">Nombre de Cliente</string>
     <string name="restablecer_password">Restablecer</string>
@@ -107,7 +107,7 @@
     <string name="perfil_usuario">Perfil de Usuario</string>
     <string name="escoger_opcion">Escoja una Opción</string>
     <string name="lectura_engine_load">Carga Motor</string>
-    <string name="medida_datos_media">Riesgo: MEDIO</string>
+    <string name="medida_datos_media">Riesgo: MEDIO </string>
     <string name="correo_app">epnpis2220@gmail.com</string>
     <string name="informacion_obd">Información OBD</string>
     <string name="usuario_guardar">Guardar Cambios</string>
@@ -124,8 +124,8 @@
     <string name="lectura_engine_rpm">Revoluciones Minuto</string>
     <string name="indice_visibilidad">Visibilidad</string>
     <string name="punto_control">Punto de Control</string>
-    <string name="medida_datos_baja">Riesgo: BAJO</string>
-    <string name="medida_datos_alta">Riesgo: ALTO</string>
+    <string name="medida_datos_baja">Riesgo: BAJO </string>
+    <string name="medida_datos_alta">Riesgo: ALTO </string>
     <string name="temperatura_clima">Temperatura</string>
     <string name="nivel_baterias">Nivel Baterias</string>
     <string name="iniciar_sesion">Iniciar Sesión</string>
@@ -159,7 +159,7 @@
     <string name="uso_lentes">Uso de Lentes</string>
     <string name="nuevo_cancelar">Cancelar</string>
     <string name="bienvenido">"Bienvenido"</string>
-    <string name="valor_ejemplo">XXXXXXXXX</string>
+    <string name="valor_ejemplo"></string>
     <string name="condiciones_lugar">Lugar</string>
     <string name="desactivada">Desactivada</string>
     <string name="punto_segmento">Segmento</string>
@@ -177,7 +177,7 @@
     <string name="privacidad">Privacidad</string>
     <string name="tab_vehiculo">Vehiculo</string>
     <string name="tipo_0">Administrador</string>
-    <string name="valor_ejemplo_2">XXXX</string>
+    <string name="valor_ejemplo_2"></string>
     <string name="medida_ejemplo">100%</string>
     <string name="indice_uv">indice UV</string>
     <string name="id_via">ID de la via</string>
@@ -190,6 +190,7 @@
     <string name="guardar">Guardar</string>
     <string name="aceptar">Aceptar</string>
     <string name="escaner">Escaner</string>
+    <string name="vehiculos">Vehículos</string>
     <string name="tab_clima">Clima</string>
     <string name="latitud">Latitud</string>
     <string name="clima_tipo">Tipo</string>
@@ -199,7 +200,6 @@
     <string name="cuenta">Cuenta</string>
     <string name="salir">Salir</string>
     <string name="ayuda">Ayuda</string>
-    <string name="vehiculos">Vehiculos</string>
     <string name="agregar_vehiculo">Agregar Vehiculo</string>
     <string name="editar_vehiculo">Editar Vehiculo</string>
     <string name="eliminar_vehiculo">Eliminar Vehiculo</string>
@@ -213,7 +213,7 @@
     <string name="tipo_carroceria">Tipo de Carroceria</string>
     <string name="transmision">Transmisión</string>
     <string name="traccion">Tracción</string>
-    <string name="color_vehiculo">Color del Vehiculo</string>
+    <string name="color_vehiculo">Número de Airbags</string>
     <string name="placa_vehiculo">Placa del Vehiculo</string>
     <string name="vehiculo_guardado">Vehiculo guardado con éxito</string>
     <string name="vehiculo_actualizado">Vehiculo actualizado con éxito</string>
@@ -225,4 +225,10 @@
     <string name="eliminar">Eliminar</string>
     <string name="ok">OK</string>
     <string name="a">a</string>
+    
+    <!-- Strings para última actualización -->
+    <string name="ultima_actualizacion_vehiculo">Última actualización vehículo: %s</string>
+    <string name="ultima_actualizacion_clima">Última actualización clima: %s</string>
+    <string name="ultima_actualizacion_accidentes">Última actualización accidentes: %s</string>
+    <string name="nunca_actualizado">Sin actualizar</string>
 </resources>
